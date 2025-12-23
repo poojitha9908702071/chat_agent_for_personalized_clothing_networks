@@ -16,6 +16,16 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+Run in Chrome by default (Windows)
+
+If you want the dev server to automatically open in Google Chrome on Windows, use the included script:
+
+```bash
+npm run dev:chrome
+```
+
+This uses `concurrently` and `wait-on` to start the Next.js dev server and open Chrome when the server is ready. If you don't have those packages installed yet, run `npm install` first.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
