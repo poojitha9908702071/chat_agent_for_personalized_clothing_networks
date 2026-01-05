@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Improved Chat Filtering</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .product-title {
+            font-weight: bold;
+            margin: 8px 0 4px 0;
+            font-size: 14px;
+        }
+        .product-details {
+            font-size: 12px;
+            color: #666;
+        }
+        .filter-test {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Improved Chat Filtering Test</h1>
+    <p>This test verifies that the improved filtering logic correctly filters products by color, gender, and category.</p>
+
+    <div class="test-section">
+        <h2>🔍 Backend Connection Test</h2>
+        <button onclick="testBackendConnection()">Test Backend Connection</button>
+        <div id="connectionResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎨 Face Tone Flow Filtering Test</h2>
+        <p>Testing the improved filtering logic for Face Tone flow:</p>
+        
+        <div class="filter-test">
+            <h3>Test Case 1: Fair Skin + Blue + Women + Dresses</h3>
+            <button onclick="testFaceToneFiltering('blue', 'women', 'dresses')">Test Blue Women Dresses</button>
+            <div id="faceToneTest1"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 2: Dark Skin + Green + Men + Shirts</h3>
+            <button onclick="testFaceToneFiltering('green', 'men', 'shirts')">Test Green Men Shirts</button>
+            <div id="faceToneTest2"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 3: Wheatish Skin + Red + Women + Western Wear</h3>
+            <button onclick="testFaceToneFiltering('red', 'women', 'western wear')">Test Red Women Western Wear</button>
+            <div id="faceToneTest3"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 4: Dark Skin + Blue + Men + Shirts (Should NOT show T-shirts)</h3>
+            <button onclick="testFaceToneFiltering('blue', 'men', 'shirts')">Test Blue Men Shirts Only</button>
+            <div id="faceToneTest4"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>💪 Body Fit Flow Filtering Test</h2>
+        <p>Testing the improved filtering logic for Body Fit flow:</p>
+        
+        <div class="filter-test">
+            <h3>Test Case 1: Women + Dresses</h3>
+            <button onclick="testBodyFitFiltering('women', 'dresses')">Test Women Dresses</button>
+            <div id="bodyFitTest1"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 2: Men + T-shirts</h3>
+            <button onclick="testBodyFitFiltering('men', 't-shirts')">Test Men T-shirts</button>
+            <div id="bodyFitTest2"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<div class="info">Testing backend connection...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Backend connection successful!<br>
+                        📊 Total products: ${data.products ? data.products.length : 0}<br>
+                        🔗 API Status: ${response.status}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Backend connection failed!<br>
+                        Error: ${error.message}<br>
+                        💡 Make sure the backend server is running on port 5000
+                    </div>
+                `;
+            }
+        }
+
+        async function testFaceToneFiltering(selectedColor, selectedGender, selectedCategory) {
+            const testNumber = selectedColor === 'blue' && selectedCategory === 'shirts' ? '4' : 
+                              selectedColor === 'blue' ? '1' : 
+                              selectedColor === 'green' ? '2' : '3';
+            const resultDiv = document.getElementById(`faceToneTest${testNumber}`);
+            resultDiv.innerHTML = '<div class="info">Testing Face Tone filtering...</div>';
+            
+            try {
+                // Get all products first
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Apply the same filtering logic as in the component
+                const filteredProducts = (data.products || []).filter((p) => {
+                    // Gender matching
+                    const matchesGender = p.gender?.toLowerCase() === selectedGender.toLowerCase() ||
+                                         p.gender?.toLowerCase() === 'unisex';
+                    
+                    // Color matching
+                    const matchesColor = p.color?.toLowerCase().includes(selectedColor.toLowerCase()) ||
+                                        p.title?.toLowerCase().includes(selectedColor.toLowerCase());
+                    
+                    // Category matching
+                    let matchesCategory = false;
+                    const productCategory = p.category?.toLowerCase() || '';
+                    const productTitle = p.title?.toLowerCase() || '';
+                    const category = selectedCategory.toLowerCase();
+                    
+                    if (category === 'dresses') {
+                        matchesCategory = productCategory.includes('dress') || productTitle.includes('dress');
+                    } else if (category === 'shirts') {
+                        // Only match "shirt" but NOT "t-shirt" or "tshirt"
+                        matchesCategory = (productCategory.includes('shirt') && !productCategory.includes('t-shirt') && !productCategory.includes('tshirt')) ||
+                                         (productTitle.includes('shirt') && !productTitle.includes('t-shirt') && !productTitle.includes('tshirt'));
+                    } else if (category === 'western wear') {
+                        matchesCategory = productCategory.includes('western') || productTitle.includes('western') ||
+                                         productCategory.includes('dress') || productTitle.includes('dress') ||
+                                         productCategory.includes('top') || productTitle.includes('top');
+                    } else {
+                        matchesCategory = productCategory.includes(category) || productTitle.includes(category);
+                    }
+                    
+                    return matchesGender && matchesColor && matchesCategory;
+                });
+                
+                const totalProducts = data.products ? data.products.length : 0;
+                const matchedProducts = filteredProducts.length;
+                
+                let resultHTML = `
+                    <div class="success">
+                        ✅ Filtering test completed!<br>
+                        📊 Total products: ${totalProducts}<br>
+                        🎯 Matched products: ${matchedProducts}<br>
+                        🔍 Filters: Color=${selectedColor}, Gender=${selectedGender}, Category=${selectedCategory}
+                    </div>
+                `;
+                
+                if (matchedProducts > 0) {
+                    resultHTML += '<div class="product-grid">';
+                    filteredProducts.slice(0, 6).forEach(product => {
+                        resultHTML += `
+                            <div class="product-card">
+                                <img src="${product.image_url}" alt="${product.title}" class="product-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+                                <div class="product-title">${product.title}</div>
+                                <div class="product-details">
+                                    💰 ₹${product.price}<br>
+                                    🎨 ${product.color || 'N/A'}<br>
+                                    👤 ${product.gender || 'N/A'}<br>
+                                    📂 ${product.category || 'N/A'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    resultHTML += '</div>';
+                } else {
+                    resultHTML += '<div class="error">❌ No products matched the filtering criteria. This might indicate an issue with the filtering logic or product data.</div>';
+                }
+                
+                resultDiv.innerHTML = resultHTML;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Filtering test failed!<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testBodyFitFiltering(selectedGender, selectedCategory) {
+            const testNumber = selectedGender === 'women' ? '1' : '2';
+            const resultDiv = document.getElementById(`bodyFitTest${testNumber}`);
+            resultDiv.innerHTML = '<div class="info">Testing Body Fit filtering...</div>';
+            
+            try {
+                // Get all products first
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Apply the same filtering logic as in the component
+                const filteredProducts = (data.products || []).filter((p) => {
+                    // Gender matching
+                    const matchesGender = p.gender?.toLowerCase() === selectedGender.toLowerCase() ||
+                                         p.gender?.toLowerCase() === 'unisex';
+                    
+                    // Category matching
+                    let matchesCategory = false;
+                    const productCategory = p.category?.toLowerCase() || '';
+                    const productTitle = p.title?.toLowerCase() || '';
+                    const category = selectedCategory.toLowerCase();
+                    
+                    if (category === 'dresses') {
+                        matchesCategory = productCategory.includes('dress') || productTitle.includes('dress');
+                    } else if (category === 'shirts') {
+                        // Only match "shirt" but NOT "t-shirt" or "tshirt"
+                        matchesCategory = (productCategory.includes('shirt') && !productCategory.includes('t-shirt') && !productCategory.includes('tshirt')) ||
+                                         (productTitle.includes('shirt') && !productTitle.includes('t-shirt') && !productTitle.includes('tshirt'));
+                    } else if (category === 't-shirts') {
+                        matchesCategory = productCategory.includes('t-shirt') || productTitle.includes('t-shirt') || 
+                                         productCategory.includes('tshirt') || productTitle.includes('tshirt');
+                    } else {
+                        matchesCategory = productCategory.includes(category) || productTitle.includes(category);
+                    }
+                    
+                    return matchesGender && matchesCategory;
+                });
+                
+                const totalProducts = data.products ? data.products.length : 0;
+                const matchedProducts = filteredProducts.length;
+                
+                let resultHTML = `
+                    <div class="success">
+                        ✅ Filtering test completed!<br>
+                        📊 Total products: ${totalProducts}<br>
+                        🎯 Matched products: ${matchedProducts}<br>
+                        🔍 Filters: Gender=${selectedGender}, Category=${selectedCategory}
+                    </div>
+                `;
+                
+                if (matchedProducts > 0) {
+                    resultHTML += '<div class="product-grid">';
+                    filteredProducts.slice(0, 6).forEach(product => {
+                        resultHTML += `
+                            <div class="product-card">
+                                <img src="${product.image_url}" alt="${product.title}" class="product-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+                                <div class="product-title">${product.title}</div>
+                                <div class="product-details">
+                                    💰 ₹${product.price}<br>
+                                    🎨 ${product.color || 'N/A'}<br>
+                                    👤 ${product.gender || 'N/A'}<br>
+                                    📂 ${product.category || 'N/A'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    resultHTML += '</div>';
+                } else {
+                    resultHTML += '<div class="error">❌ No products matched the filtering criteria. This might indicate an issue with the filtering logic or product data.</div>';
+                }
+                
+                resultDiv.innerHTML = resultHTML;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Filtering test failed!<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test backend connection on page load
+        window.addEventListener('load', () => {
+            testBackendConnection();
+        });
+    </script>
+</body>
+</html>

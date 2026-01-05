@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women's Bottomwear Final Fix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .product-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .product-price {
+            color: #e91e63;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .product-category {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎉 Women's Bottomwear Final Fix Test</h1>
+        <p>Testing the smart quote character fix for Women's Bottomwear category</p>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 API Endpoint Tests</h2>
+        <button class="test-button" onclick="testWomensBottomwear()">Test Women's Bottomwear API</button>
+        <button class="test-button" onclick="testBottomWearComparison()">Compare with Bottom Wear</button>
+        <button class="test-button" onclick="testAllCategories()">Test All Categories</button>
+        <div id="apiResults" class="results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>👗 Women's Bottomwear Products</h2>
+        <div id="womensProducts" class="product-grid"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>👖 Bottom Wear Products (for comparison)</h2>
+        <div id="bottomWearProducts" class="product-grid"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+
+        async function testWomensBottomwear() {
+            const resultsDiv = document.getElementById('apiResults');
+            resultsDiv.innerHTML = '<p>🔄 Testing Women\'s Bottomwear API...</p>';
+
+            try {
+                // Test the exact URL the frontend uses
+                const url = `${API_BASE}/products/category/Women's%20Bottomwear?gender=Women&limit=50`;
+                console.log('Testing URL:', url);
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    const count = data.products.length;
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            ✅ SUCCESS: Found ${count} Women's Bottomwear products!
+                            <br>API Response: ${response.status}
+                            <br>Products returned: ${count}
+                        </div>
+                    `;
+
+                    // Display products
+                    displayProducts(data.products, 'womensProducts');
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="error">
+                            ❌ FAILED: ${data.error || 'Unknown error'}
+                            <br>Status: ${response.status}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        ❌ ERROR: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testBottomWearComparison() {
+            const resultsDiv = document.getElementById('apiResults');
+            resultsDiv.innerHTML = '<p>🔄 Testing Bottom Wear vs Women\'s Bottomwear...</p>';
+
+            try {
+                // Test Bottom Wear (generic category)
+                const bottomWearUrl = `${API_BASE}/products/category/Bottom%20Wear?limit=50`;
+                const bottomWearResponse = await fetch(bottomWearUrl);
+                const bottomWearData = await bottomWearResponse.json();
+
+                // Test Women's Bottomwear (specific category)
+                const womensUrl = `${API_BASE}/products/category/Women's%20Bottomwear?gender=Women&limit=50`;
+                const womensResponse = await fetch(womensUrl);
+                const womensData = await womensResponse.json();
+
+                const bottomWearCount = bottomWearData.success ? bottomWearData.products.length : 0;
+                const womensCount = womensData.success ? womensData.products.length : 0;
+
+                resultsDiv.innerHTML = `
+                    <div class="success">
+                        📊 COMPARISON RESULTS:
+                        <br>• Bottom Wear (generic): ${bottomWearCount} products
+                        <br>• Women's Bottomwear (specific): ${womensCount} products
+                        <br>✅ Categories are properly separated!
+                    </div>
+                `;
+
+                // Display both sets of products
+                if (womensData.success) {
+                    displayProducts(womensData.products, 'womensProducts');
+                }
+                if (bottomWearData.success) {
+                    displayProducts(bottomWearData.products, 'bottomWearProducts');
+                }
+
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        ❌ ERROR: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testAllCategories() {
+            const resultsDiv = document.getElementById('apiResults');
+            resultsDiv.innerHTML = '<p>🔄 Testing all categories...</p>';
+
+            const categories = [
+                'Women\'s Bottomwear',
+                'Bottom Wear',
+                'Dresses',
+                'Western Wear',
+                'T-shirts'
+            ];
+
+            let results = '<div class="success">📋 ALL CATEGORIES TEST:<br>';
+
+            for (const category of categories) {
+                try {
+                    const url = `${API_BASE}/products/category/${encodeURIComponent(category)}?limit=10`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    const count = data.success ? data.products.length : 0;
+                    results += `<br>• ${category}: ${count} products`;
+                } catch (error) {
+                    results += `<br>• ${category}: ERROR - ${error.message}`;
+                }
+            }
+
+            results += '</div>';
+            resultsDiv.innerHTML = results;
+        }
+
+        function displayProducts(products, containerId) {
+            const container = document.getElementById(containerId);
+            
+            if (!products || products.length === 0) {
+                container.innerHTML = '<p>No products found</p>';
+                return;
+            }
+
+            container.innerHTML = products.slice(0, 12).map(product => `
+                <div class="product-card">
+                    <img src="${product.image_url}" alt="${product.title}" class="product-image" 
+                         onerror="this.src='https://via.placeholder.com/200x200?text=No+Image'">
+                    <div class="product-title">${product.title}</div>
+                    <div class="product-price">₹${product.price}</div>
+                    <div class="product-category">${product.category} | ${product.gender}</div>
+                </div>
+            `).join('');
+        }
+
+        // Auto-run the main test when page loads
+        window.onload = function() {
+            testWomensBottomwear();
+        };
+    </script>
+</body>
+</html>

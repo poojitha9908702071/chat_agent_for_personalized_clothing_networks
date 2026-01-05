@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Order Query Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .query-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Order Query Detection</h1>
+        <p>Test if order queries are being detected correctly in the chat system.</p>
+
+        <div class="test-section">
+            <h3>🧪 Query Detection Test</h3>
+            <input type="text" class="query-input" id="queryInput" placeholder="Enter a query to test (e.g., 'my orders', 'order details')" value="my orders">
+            <button onclick="testQuery()">Test Query</button>
+            <div id="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Pre-defined Test Queries</h3>
+            <button onclick="testPredefined('my orders')">Test: "my orders"</button>
+            <button onclick="testPredefined('order details')">Test: "order details"</button>
+            <button onclick="testPredefined('show orders')">Test: "show orders"</button>
+            <button onclick="testPredefined('order history')">Test: "order history"</button>
+            <button onclick="testPredefined('orders')">Test: "orders"</button>
+            <div id="predefinedResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Live Chat Test</h3>
+            <p>To test in the actual chat:</p>
+            <ol>
+                <li>Login at <a href="http://localhost:3000/login" target="_blank">http://localhost:3000/login</a> with test@example.com</li>
+                <li>Go to <a href="http://localhost:3000/home" target="_blank">http://localhost:3000/home</a></li>
+                <li>Open the chat assistant</li>
+                <li>Type one of these queries:</li>
+                <ul>
+                    <li>"my orders"</li>
+                    <li>"order details"</li>
+                    <li>"show my orders"</li>
+                    <li>"order history"</li>
+                </ul>
+                <li>Check if orders are displayed</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Debug Information</h3>
+            <p><strong>Expected Behavior:</strong></p>
+            <ul>
+                <li>Query should be detected by <code>isOrdersListQuery()</code></li>
+                <li>Should return <code>type: 'orders_request'</code></li>
+                <li>Should trigger <code>handleOrdersRequest()</code></li>
+                <li>Should display orders from database</li>
+            </ul>
+            
+            <p><strong>If orders are not showing:</strong></p>
+            <ul>
+                <li>Check browser console for errors</li>
+                <li>Verify user is logged in</li>
+                <li>Check if backend is running on port 5000</li>
+                <li>Verify JWT token is valid</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Replicate the query detection functions from the chat component
+        function isOrdersListQuery(message) {
+            const ordersListKeywords = [
+                'show orders', 'my orders', 'order list', 'orders list', 'recent orders',
+                'order history', 'purchase history', 'what orders', 'orders summary',
+                'order details', 'show my orders', 'view orders', 'check orders',
+                'orders', 'order', 'my order history', 'purchase details'
+            ];
+            
+            const messageLower = message.toLowerCase();
+            return ordersListKeywords.some(keyword => messageLower.includes(keyword));
+        }
+
+        function isOrderRelatedQuery(message) {
+            const orderKeywords = [
+                'order', 'orders', 'my order', 'my orders', 'order details', 'order status',
+                'track order', 'track my order', 'what did i order', 'show my orders',
+                'order history', 'purchase history', 'bought', 'purchased', 'delivery',
+                'shipped', 'delivered', 'cancel order', 'return order'
+            ];
+            
+            const messageLower = message.toLowerCase();
+            return orderKeywords.some(keyword => messageLower.includes(keyword));
+        }
+
+        function testQuery() {
+            const query = document.getElementById('queryInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            const isOrdersList = isOrdersListQuery(query);
+            const isOrderRelated = isOrderRelatedQuery(query);
+            
+            let resultHTML = `<h4>Query: "${query}"</h4>`;
+            
+            if (isOrdersList) {
+                resultHTML += `<div class="result success">✅ Detected by isOrdersListQuery() - Should trigger orders_request</div>`;
+            } else {
+                resultHTML += `<div class="result error">❌ NOT detected by isOrdersListQuery()</div>`;
+            }
+            
+            if (isOrderRelated) {
+                resultHTML += `<div class="result success">✅ Detected by isOrderRelatedQuery() - Detailed order handling</div>`;
+            } else {
+                resultHTML += `<div class="result error">❌ NOT detected by isOrderRelatedQuery()</div>`;
+            }
+            
+            // Determine which would be triggered first
+            if (isOrdersList && isOrderRelated) {
+                resultHTML += `<div class="result success">🎯 isOrdersListQuery() should be triggered first (simple order list)</div>`;
+            } else if (isOrdersList) {
+                resultHTML += `<div class="result success">🎯 Only isOrdersListQuery() triggered (simple order list)</div>`;
+            } else if (isOrderRelated) {
+                resultHTML += `<div class="result success">🎯 Only isOrderRelatedQuery() triggered (detailed order handling)</div>`;
+            } else {
+                resultHTML += `<div class="result error">❌ No order query detected</div>`;
+            }
+            
+            resultDiv.innerHTML = resultHTML;
+        }
+
+        function testPredefined(query) {
+            document.getElementById('queryInput').value = query;
+            testQuery();
+        }
+
+        // Test default query on load
+        window.onload = function() {
+            testQuery();
+        };
+    </script>
+</body>
+</html>

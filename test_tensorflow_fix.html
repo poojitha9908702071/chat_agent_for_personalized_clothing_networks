@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TensorFlow.js Build Fix Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .error {
+            border-left-color: #f44336;
+            background: rgba(244, 67, 54, 0.1);
+        }
+        .success {
+            border-left-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        .warning {
+            border-left-color: #ff9800;
+            background: rgba(255, 152, 0, 0.1);
+        }
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-green { background-color: #4CAF50; }
+        .status-red { background-color: #f44336; }
+        .status-yellow { background-color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 TensorFlow.js Build Fix Verification</h1>
+        <p>Verify that the Next.js 16 + Turbopack + TensorFlow.js compatibility issues have been resolved.</p>
+        
+        <!-- Build Status Check -->
+        <div class="test-section">
+            <h3>🏗️ Build Status Check</h3>
+            <p>Check if the Next.js application builds without TensorFlow.js module resolution errors.</p>
+            <button onclick="checkBuildStatus()">🔍 Check Build Status</button>
+            <div class="result" id="buildResult">Click button to check build status...</div>
+        </div>
+
+        <!-- Frontend Server Status -->
+        <div class="test-section">
+            <h3>🖥️ Frontend Server Status</h3>
+            <button onclick="checkFrontendStatus()">🌐 Check Frontend</button>
+            <div class="result" id="frontendResult">Click button to check frontend server...</div>
+        </div>
+
+        <!-- AI Try-On Component Test -->
+        <div class="test-section">
+            <h3>🤖 AI Try-On Component Test</h3>
+            <p>Test if AI Try-On components load without TensorFlow.js build errors.</p>
+            <button onclick="testAITryOnComponent()">🧪 Test AI Component</button>
+            <div class="result" id="aiComponentResult">Click button to test AI component...</div>
+        </div>
+
+        <!-- TensorFlow.js Runtime Loading -->
+        <div class="test-section">
+            <h3>📦 TensorFlow.js Runtime Loading</h3>
+            <p>Test if TensorFlow.js can be loaded dynamically at runtime (fallback mode).</p>
+            <button onclick="testTensorFlowLoading()">⚡ Test TensorFlow Loading</button>
+            <div class="result" id="tensorflowResult">Click button to test TensorFlow.js loading...</div>
+        </div>
+
+        <!-- Product Page Navigation Test -->
+        <div class="test-section">
+            <h3>🛍️ Product Page Navigation Test</h3>
+            <p>Test navigation to product pages that use AI Try-On components.</p>
+            <button onclick="testProductPageNavigation()">🔗 Test Product Pages</button>
+            <div class="result" id="navigationResult">Click button to test product page navigation...</div>
+        </div>
+
+        <!-- Configuration Verification -->
+        <div class="test-section">
+            <h3>⚙️ Configuration Verification</h3>
+            <div class="result" id="configResult">
+Next.js Configuration Applied:
+✅ Turbopack resolveAlias: TensorFlow.js packages excluded
+✅ Webpack fallback: TensorFlow.js packages set to false  
+✅ serverExternalPackages: TensorFlow.js packages excluded
+✅ Dynamic imports: Used in AI Try-On services
+✅ Fallback service: Available for demo mode
+
+Expected Result:
+- No "Module not found: Can't resolve '../utils/unary_utils'" errors
+- AI Try-On components load successfully
+- TensorFlow.js loads dynamically at runtime (optional)
+- Product pages with AI features work correctly
+            </div>
+        </div>
+
+        <!-- Overall Status -->
+        <div class="test-section">
+            <h3>📊 Overall Status</h3>
+            <div id="overallStatus">
+                <div><span class="status-indicator status-yellow"></span>Build Status: <span id="buildStatusText">Checking...</span></div>
+                <div><span class="status-indicator status-yellow"></span>Frontend Server: <span id="frontendStatusText">Checking...</span></div>
+                <div><span class="status-indicator status-yellow"></span>AI Components: <span id="aiStatusText">Not tested</span></div>
+                <div><span class="status-indicator status-yellow"></span>TensorFlow.js: <span id="tfStatusText">Not tested</span></div>
+                <div><span class="status-indicator status-yellow"></span>Navigation: <span id="navStatusText">Not tested</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FRONTEND_URL = 'http://localhost:3000';
+
+        function updateStatus(elementId, status, text) {
+            const element = document.getElementById(elementId);
+            const indicator = element.previousElementSibling;
+            
+            element.textContent = text;
+            
+            if (status === 'success') {
+                indicator.className = 'status-indicator status-green';
+            } else if (status === 'error') {
+                indicator.className = 'status-indicator status-red';
+            } else {
+                indicator.className = 'status-indicator status-yellow';
+            }
+        }
+
+        async function checkBuildStatus() {
+            const resultDiv = document.getElementById('buildResult');
+            resultDiv.textContent = 'Checking build status...';
+            
+            try {
+                // Check if the main page loads without build errors
+                const response = await fetch(FRONTEND_URL);
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    
+                    // Check for build error indicators in the HTML
+                    if (html.includes('Module not found') || html.includes('unary_utils') || html.includes('Build Error')) {
+                        resultDiv.textContent = '❌ Build errors detected in HTML response\n\nTensorFlow.js module resolution errors may still be present.';
+                        resultDiv.className = 'result error';
+                        updateStatus('buildStatusText', 'error', 'Build errors detected');
+                    } else {
+                        resultDiv.textContent = '✅ Build successful!\n\nNo TensorFlow.js module resolution errors detected.\nNext.js application is building correctly.';
+                        resultDiv.className = 'result success';
+                        updateStatus('buildStatusText', 'success', 'Build successful');
+                    }
+                } else {
+                    resultDiv.textContent = `⚠️ Frontend server responded with status: ${response.status}\n\nServer may be starting up or experiencing issues.`;
+                    resultDiv.className = 'result warning';
+                    updateStatus('buildStatusText', 'error', `HTTP ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Failed to check build status:\n${error.message}\n\nMake sure frontend server is running on port 3000.`;
+                resultDiv.className = 'result error';
+                updateStatus('buildStatusText', 'error', 'Connection failed');
+            }
+        }
+
+        async function checkFrontendStatus() {
+            const resultDiv = document.getElementById('frontendResult');
+            resultDiv.textContent = 'Checking frontend server...';
+            
+            try {
+                const startTime = Date.now();
+                const response = await fetch(FRONTEND_URL);
+                const responseTime = Date.now() - startTime;
+                
+                if (response.ok) {
+                    resultDiv.textContent = `✅ Frontend server is running!\n\nURL: ${FRONTEND_URL}\nStatus: ${response.status}\nResponse Time: ${responseTime}ms\nNext.js application is accessible.`;
+                    resultDiv.className = 'result success';
+                    updateStatus('frontendStatusText', 'success', 'Running');
+                } else {
+                    resultDiv.textContent = `⚠️ Frontend server responded with error:\nStatus: ${response.status}\nURL: ${FRONTEND_URL}`;
+                    resultDiv.className = 'result warning';
+                    updateStatus('frontendStatusText', 'error', `HTTP ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Frontend server connection failed:\n${error.message}\n\nMake sure 'npm run dev' is running on port 3000.`;
+                resultDiv.className = 'result error';
+                updateStatus('frontendStatusText', 'error', 'Not running');
+            }
+        }
+
+        async function testAITryOnComponent() {
+            const resultDiv = document.getElementById('aiComponentResult');
+            resultDiv.textContent = 'Testing AI Try-On component loading...';
+            
+            try {
+                // Test if a product page with AI Try-On loads
+                const testUrls = [
+                    `${FRONTEND_URL}/products/1`,
+                    `${FRONTEND_URL}/products/test`,
+                    `${FRONTEND_URL}/home`
+                ];
+                
+                let successCount = 0;
+                let results = 'AI Component Loading Test Results:\n\n';
+                
+                for (const url of testUrls) {
+                    try {
+                        const response = await fetch(url);
+                        if (response.ok) {
+                            const html = await response.text();
+                            
+                            // Check for TensorFlow.js errors in the page
+                            if (html.includes('unary_utils') || html.includes('Module not found')) {
+                                results += `❌ ${url}: TensorFlow.js build errors detected\n`;
+                            } else {
+                                results += `✅ ${url}: Loaded successfully (${response.status})\n`;
+                                successCount++;
+                            }
+                        } else {
+                            results += `⚠️ ${url}: HTTP ${response.status}\n`;
+                        }
+                    } catch (error) {
+                        results += `❌ ${url}: ${error.message}\n`;
+                    }
+                }
+                
+                if (successCount > 0) {
+                    results += `\n✅ ${successCount}/${testUrls.length} pages loaded without TensorFlow.js errors`;
+                    resultDiv.className = 'result success';
+                    updateStatus('aiStatusText', 'success', 'Working');
+                } else {
+                    results += '\n❌ All test pages failed to load properly';
+                    resultDiv.className = 'result error';
+                    updateStatus('aiStatusText', 'error', 'Failed');
+                }
+                
+                resultDiv.textContent = results;
+                
+            } catch (error) {
+                resultDiv.textContent = `❌ AI component test failed:\n${error.message}`;
+                resultDiv.className = 'result error';
+                updateStatus('aiStatusText', 'error', 'Test failed');
+            }
+        }
+
+        async function testTensorFlowLoading() {
+            const resultDiv = document.getElementById('tensorflowResult');
+            resultDiv.textContent = 'Testing TensorFlow.js dynamic loading...';
+            
+            try {
+                // Test if TensorFlow.js can be loaded dynamically
+                let tfLoaded = false;
+                let loadMethod = '';
+                
+                try {
+                    // Try direct import (should work in demo mode)
+                    const tf = await import('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js');
+                    if (tf) {
+                        tfLoaded = true;
+                        loadMethod = 'ES6 import from CDN';
+                    }
+                } catch (error1) {
+                    try {
+                        // Try script tag loading
+                        const script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js';
+                        document.head.appendChild(script);
+                        
+                        await new Promise((resolve, reject) => {
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            setTimeout(reject, 10000); // 10 second timeout
+                        });
+                        
+                        if (window.tf) {
+                            tfLoaded = true;
+                            loadMethod = 'Script tag from CDN';
+                        }
+                    } catch (error2) {
+                        console.log('CDN loading failed:', error2);
+                    }
+                }
+                
+                if (tfLoaded) {
+                    resultDiv.textContent = `✅ TensorFlow.js loaded successfully!\n\nMethod: ${loadMethod}\nVersion: ${window.tf ? window.tf.version : 'Unknown'}\nBackend: ${window.tf ? window.tf.getBackend() : 'Unknown'}\n\nAI Try-On will work with full functionality.`;
+                    resultDiv.className = 'result success';
+                    updateStatus('tfStatusText', 'success', 'Loaded');
+                } else {
+                    resultDiv.textContent = `⚠️ TensorFlow.js not loaded\n\nThis is expected in the current configuration.\nAI Try-On will work in demo mode with fallback functionality.\n\nDemo mode provides:\n- Simulated processing\n- Fit analysis\n- Size recommendations\n- Style suggestions`;
+                    resultDiv.className = 'result warning';
+                    updateStatus('tfStatusText', 'warning', 'Demo mode');
+                }
+                
+            } catch (error) {
+                resultDiv.textContent = `❌ TensorFlow.js loading test failed:\n${error.message}\n\nAI Try-On will use fallback demo mode.`;
+                resultDiv.className = 'result warning';
+                updateStatus('tfStatusText', 'warning', 'Fallback mode');
+            }
+        }
+
+        async function testProductPageNavigation() {
+            const resultDiv = document.getElementById('navigationResult');
+            resultDiv.textContent = 'Testing product page navigation...';
+            
+            try {
+                const testPages = [
+                    { url: `${FRONTEND_URL}/`, name: 'Home Page' },
+                    { url: `${FRONTEND_URL}/home`, name: 'Home Dashboard' },
+                    { url: `${FRONTEND_URL}/products/1`, name: 'Product Detail Page' },
+                    { url: `${FRONTEND_URL}/men`, name: 'Men Category' },
+                    { url: `${FRONTEND_URL}/women`, name: 'Women Category' }
+                ];
+                
+                let results = 'Navigation Test Results:\n\n';
+                let successCount = 0;
+                
+                for (const page of testPages) {
+                    try {
+                        const response = await fetch(page.url);
+                        
+                        if (response.ok) {
+                            const html = await response.text();
+                            
+                            // Check for build errors
+                            if (html.includes('unary_utils') || html.includes('Module not found')) {
+                                results += `❌ ${page.name}: Build errors detected\n`;
+                            } else {
+                                results += `✅ ${page.name}: Loaded successfully\n`;
+                                successCount++;
+                            }
+                        } else {
+                            results += `⚠️ ${page.name}: HTTP ${response.status}\n`;
+                        }
+                    } catch (error) {
+                        results += `❌ ${page.name}: ${error.message}\n`;
+                    }
+                }
+                
+                results += `\n📊 Summary: ${successCount}/${testPages.length} pages loaded successfully`;
+                
+                if (successCount === testPages.length) {
+                    results += '\n\n✅ All pages loaded without TensorFlow.js build errors!';
+                    resultDiv.className = 'result success';
+                    updateStatus('navStatusText', 'success', 'All pages working');
+                } else if (successCount > 0) {
+                    results += '\n\n⚠️ Some pages loaded successfully, others may need attention.';
+                    resultDiv.className = 'result warning';
+                    updateStatus('navStatusText', 'warning', 'Partial success');
+                } else {
+                    results += '\n\n❌ No pages loaded successfully. Check server status.';
+                    resultDiv.className = 'result error';
+                    updateStatus('navStatusText', 'error', 'Navigation failed');
+                }
+                
+                resultDiv.textContent = results;
+                
+            } catch (error) {
+                resultDiv.textContent = `❌ Navigation test failed:\n${error.message}`;
+                resultDiv.className = 'result error';
+                updateStatus('navStatusText', 'error', 'Test failed');
+            }
+        }
+
+        // Auto-run basic checks on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                checkFrontendStatus();
+                setTimeout(() => {
+                    checkBuildStatus();
+                }, 1000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

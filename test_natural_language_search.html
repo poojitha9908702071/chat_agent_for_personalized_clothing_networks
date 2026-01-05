@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natural Language Product Search Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .query-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-color: #bee5eb;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .product-card h4 {
+            margin: 10px 0 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .product-card .price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e91e63;
+        }
+        .product-card .details {
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .filters-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .example-queries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .example-query {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #bbdefb;
+            transition: all 0.2s;
+        }
+        .example-query:hover {
+            background: #bbdefb;
+            transform: translateY(-2px);
+        }
+        .example-query .query-text {
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .example-query .expected {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Natural Language Product Search Test</h1>
+        <p>Test the intelligent product search that understands natural language queries and converts them to database filters.</p>
+
+        <!-- Manual Query Test -->
+        <div class="test-section">
+            <h3>🔍 Manual Query Test</h3>
+            <input type="text" class="query-input" id="manual-query" placeholder="Try: 'show blue shirts for men under 2000'" />
+            <button class="btn btn-success" onclick="testManualQuery()">Search Products</button>
+            <div id="manual-result" class="result" style="display: none;"></div>
+            <div id="manual-products" class="products-grid"></div>
+        </div>
+
+        <!-- Example Queries -->
+        <div class="test-section">
+            <h3>💡 Example Queries (Click to Test)</h3>
+            <div class="example-queries">
+                <div class="example-query" onclick="testQuery('show blue shirts for men under 2000')">
+                    <div class="query-text">"show blue shirts for men under 2000"</div>
+                    <div class="expected">Expected: gender=men, category=shirts, color=blue, price≤2000</div>
+                </div>
+                
+                <div class="example-query" onclick="testQuery('women ethnic wear red color below 3000')">
+                    <div class="query-text">"women ethnic wear red color below 3000"</div>
+                    <div class="expected">Expected: gender=women, category=ethnic wear, color=red, price≤3000</div>
+                </div>
+                
+                <div class="example-query" onclick="testQuery('black t-shirts for men')">
+                    <div class="query-text">"black t-shirts for men"</div>
+                    <div class="expected">Expected: gender=men, category=t-shirts, color=black</div>
+                </div>
+                
+                <div class="example-query" onclick="testQuery('dresses for women under 2500')">
+                    <div class="query-text">"dresses for women under 2500"</div>
+                    <div class="expected">Expected: gender=women, category=dresses, price≤2500</div>
+                </div>
+                
+                <div class="example-query" onclick="testQuery('show party wear under 2000 for women')">
+                    <div class="query-text">"show party wear under 2000 for women"</div>
+                    <div class="expected">Expected: gender=women, categories=[Western Wear, Dresses], price≤2000</div>
+                </div>
+                
+                <div class="example-query" onclick="testQuery('white shirts above 1500')">
+                    <div class="query-text">"white shirts above 1500"</div>
+                    <div class="expected">Expected: category=shirts, color=white, price≥1500</div>
+                </div>
+                
+                <div class="example-query" onclick="testQuery('formal wear for men between 1000 and 3000')">
+                    <div class="query-text">"formal wear for men between 1000 and 3000"</div>
+                    <div class="expected">Expected: gender=men, categories=[Shirts], price 1000-3000</div>
+                </div>
+                
+                <div class="example-query" onclick="testQuery('pink dresses size M')">
+                    <div class="query-text">"pink dresses size M"</div>
+                    <div class="expected">Expected: category=dresses, color=pink, size=M</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Follow-up Query Test -->
+        <div class="test-section">
+            <h3>🔄 Follow-up Query Test</h3>
+            <p>First, run a search, then test follow-up queries like "show under 1500" or "above 2000"</p>
+            <input type="text" class="query-input" id="followup-query" placeholder="Try: 'under 1500' or 'above 2000'" />
+            <button class="btn" onclick="testFollowUpQuery()">Apply Follow-up Filter</button>
+            <div id="followup-result" class="result" style="display: none;"></div>
+            <div id="followup-products" class="products-grid"></div>
+        </div>
+
+        <!-- Filter Extraction Test -->
+        <div class="test-section">
+            <h3>🔧 Filter Extraction Analysis</h3>
+            <p>See how queries are parsed into database filters:</p>
+            <div id="filter-analysis" class="filters-display">
+                Run a query to see filter extraction...
+            </div>
+        </div>
+
+        <!-- Backend Status -->
+        <div class="test-section">
+            <h3>🖥️ Backend Status</h3>
+            <div id="backend-status" class="result info">
+                <span>Checking backend connection...</span>
+            </div>
+            <button class="btn" onclick="checkBackendStatus()">Check Status</button>
+        </div>
+
+        <!-- API Response Log -->
+        <div class="test-section">
+            <h3>📋 API Response Log</h3>
+            <button class="btn" onclick="clearLog()">Clear Log</button>
+            <pre id="api-log"></pre>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        let logContent = '';
+        let lastSearchContext = null;
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logContent += `[${timestamp}] ${message}\n`;
+            document.getElementById('api-log').textContent = logContent;
+        }
+
+        function clearLog() {
+            logContent = '';
+            document.getElementById('api-log').textContent = '';
+        }
+
+        function showResult(elementId, message, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isSuccess ? 'success' : 'error'}`;
+            element.innerHTML = message;
+        }
+
+        function displayProducts(containerId, products) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (products.length === 0) {
+                container.innerHTML = '<p>No products found</p>';
+                return;
+            }
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image_url}" alt="${product.title}" onerror="this.src='https://via.placeholder.com/250x200/ec4899/ffffff?text=Product'">
+                    <h4>${product.title}</h4>
+                    <div class="price">₹${product.price}</div>
+                    <div class="details">
+                        <div>Color: ${product.color}</div>
+                        <div>Gender: ${product.gender}</div>
+                        <div>Category: ${product.category}</div>
+                        <div>Size: ${product.size}</div>
+                    </div>
+                `;
+                container.appendChild(productCard);
+            });
+        }
+
+        function displayFilterAnalysis(filters, query) {
+            const analysis = document.getElementById('filter-analysis');
+            analysis.innerHTML = `
+                <strong>Query:</strong> "${query}"<br><br>
+                <strong>Extracted Filters:</strong><br>
+                ${JSON.stringify(filters, null, 2)}
+            `;
+        }
+
+        async function checkBackendStatus() {
+            const statusElement = document.getElementById('backend-status');
+            statusElement.innerHTML = 'Checking...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/cache/count`);
+                if (response.ok) {
+                    const data = await response.json();
+                    statusElement.innerHTML = `
+                        ✅ Backend is running on port 5000<br>
+                        📊 Database connected: ${data.cached_products} products in clothing table
+                    `;
+                    statusElement.className = 'result success';
+                    log('✅ Backend connection successful');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusElement.innerHTML = `
+                    ❌ Backend not accessible: ${error.message}<br>
+                    💡 Make sure to run: python backend/app.py
+                `;
+                statusElement.className = 'result error';
+                log(`❌ Backend connection failed: ${error.message}`);
+            }
+        }
+
+        async function testQuery(query) {
+            document.getElementById('manual-query').value = query;
+            await testManualQuery();
+        }
+
+        async function testManualQuery() {
+            const query = document.getElementById('manual-query').value;
+            if (!query.trim()) {
+                alert('Please enter a query');
+                return;
+            }
+            
+            log(`🔍 Testing query: "${query}"`);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/products/search-natural`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await response.json();
+                log(`Response: ${JSON.stringify(data, null, 2)}`);
+
+                if (response.ok) {
+                    // Store context for follow-up queries
+                    lastSearchContext = {
+                        filters: data.filters_applied,
+                        query: query
+                    };
+                    
+                    showResult('manual-result', `
+                        ✅ Search Successful!<br>
+                        📊 Found ${data.count} products<br>
+                        🔍 Filters Applied: ${JSON.stringify(data.filters_applied)}
+                    `, true);
+                    
+                    displayProducts('manual-products', data.products);
+                    displayFilterAnalysis(data.filters_applied, query);
+                    
+                    log(`✅ Search successful: ${data.count} products found`);
+                } else {
+                    showResult('manual-result', `
+                        ❌ Search Failed: ${data.error || 'Unknown error'}
+                    `, false);
+                    log(`❌ Search failed: ${data.error}`);
+                }
+            } catch (error) {
+                showResult('manual-result', `
+                    ❌ Connection Error: ${error.message}
+                `, false);
+                log(`❌ Connection error: ${error.message}`);
+            }
+        }
+
+        async function testFollowUpQuery() {
+            const followUpQuery = document.getElementById('followup-query').value;
+            if (!followUpQuery.trim()) {
+                alert('Please enter a follow-up query');
+                return;
+            }
+            
+            if (!lastSearchContext) {
+                alert('Please run a search first to establish context');
+                return;
+            }
+            
+            log(`🔄 Testing follow-up query: "${followUpQuery}"`);
+            
+            // Extract price filters from follow-up query
+            const updatedFilters = { ...lastSearchContext.filters };
+            
+            // Remove previous price filters
+            delete updatedFilters.price_min;
+            delete updatedFilters.price_max;
+            
+            // Extract new price constraints
+            const underMatch = followUpQuery.match(/(?:under|below|less than)\s*(?:rs\.?|₹)?\s*(\d+)/i);
+            if (underMatch) {
+                updatedFilters.price_max = parseInt(underMatch[1]);
+            }
+            
+            const aboveMatch = followUpQuery.match(/(?:above|over|more than|greater than)\s*(?:rs\.?|₹)?\s*(\d+)/i);
+            if (aboveMatch) {
+                updatedFilters.price_min = parseInt(aboveMatch[1]);
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/products/search-natural`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        query: lastSearchContext.query,
+                        override_filters: updatedFilters
+                    })
+                });
+
+                const data = await response.json();
+                log(`Follow-up response: ${JSON.stringify(data, null, 2)}`);
+
+                if (response.ok) {
+                    // Update context
+                    lastSearchContext.filters = updatedFilters;
+                    
+                    showResult('followup-result', `
+                        ✅ Follow-up Search Successful!<br>
+                        📊 Found ${data.count} products with updated filters<br>
+                        🔍 Updated Filters: ${JSON.stringify(updatedFilters)}
+                    `, true);
+                    
+                    displayProducts('followup-products', data.products);
+                    displayFilterAnalysis(updatedFilters, `${lastSearchContext.query} + ${followUpQuery}`);
+                    
+                    log(`✅ Follow-up search successful: ${data.count} products found`);
+                } else {
+                    showResult('followup-result', `
+                        ❌ Follow-up Search Failed: ${data.error || 'Unknown error'}
+                    `, false);
+                    log(`❌ Follow-up search failed: ${data.error}`);
+                }
+            } catch (error) {
+                showResult('followup-result', `
+                    ❌ Connection Error: ${error.message}
+                `, false);
+                log(`❌ Follow-up connection error: ${error.message}`);
+            }
+        }
+
+        // Auto-check backend status on page load
+        window.addEventListener('load', () => {
+            checkBackendStatus();
+            log('🚀 Natural Language Product Search Test Started');
+        });
+    </script>
+</body>
+</html>

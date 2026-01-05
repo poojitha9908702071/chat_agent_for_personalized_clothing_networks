@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Sunitha Authentication - Order Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ec4899, #f97316);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .button {
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        .success { background: rgba(16, 185, 129, 0.3); }
+        .error { background: rgba(239, 68, 68, 0.3); }
+        .info { background: rgba(59, 130, 246, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Fix Sunitha's Order Chat Issue</h1>
+        
+        <div class="status info">
+            <h3>📋 Current Status:</h3>
+            <p><strong>Problem:</strong> Chat shows "no orders" for sunitha@gmail.com</p>
+            <p><strong>Cause:</strong> Missing or invalid JWT authentication token</p>
+            <p><strong>Solution:</strong> Set proper authentication token</p>
+        </div>
+
+        <h2>🔍 Step 1: Check Current Authentication</h2>
+        <button class="button" onclick="checkAuth()">Check Current Auth Status</button>
+        <div id="authStatus" class="status"></div>
+
+        <h2>🔧 Step 2: Fix Authentication</h2>
+        <button class="button" onclick="fixAuth()">Fix Sunitha's Authentication</button>
+        <div id="fixStatus" class="status"></div>
+
+        <h2>🧪 Step 3: Test Order API</h2>
+        <button class="button" onclick="testOrderAPI()">Test Order API Call</button>
+        <div id="apiStatus" class="status"></div>
+
+        <h2>💬 Step 4: Test Chat</h2>
+        <div class="status info">
+            <p><strong>After fixing authentication:</strong></p>
+            <ol>
+                <li>Open the chat (pink button in bottom right)</li>
+                <li>Type "show my orders" or just "orders"</li>
+                <li>Should see Order #ORD40207088 with cancel button</li>
+            </ol>
+        </div>
+
+        <h2>🎯 Expected Result</h2>
+        <div class="status success">
+            <p><strong>Chat should display:</strong></p>
+            <pre>📦 Your Orders (1 total)
+
+**Order #ORD40207088**
+✅ Status: confirmed
+📅 Date: 1/4/2026
+💰 Total: ₹2541
+
+[Interactive Order Card with Cancel Button]</pre>
+        </div>
+    </div>
+
+    <script>
+        function checkAuth() {
+            const authToken = localStorage.getItem('authToken');
+            const userEmail = localStorage.getItem('user_email');
+            
+            const statusDiv = document.getElementById('authStatus');
+            
+            if (authToken && userEmail === 'sunitha@gmail.com') {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `
+                    <h4>✅ Authentication Status: GOOD</h4>
+                    <p><strong>User Email:</strong> ${userEmail}</p>
+                    <p><strong>Token Present:</strong> Yes (${authToken.length} characters)</p>
+                    <p><strong>Status:</strong> Ready for order queries</p>
+                `;
+            } else if (authToken && userEmail !== 'sunitha@gmail.com') {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    <h4>❌ Authentication Status: WRONG USER</h4>
+                    <p><strong>Current User:</strong> ${userEmail || 'Unknown'}</p>
+                    <p><strong>Expected:</strong> sunitha@gmail.com</p>
+                    <p><strong>Action:</strong> Need to fix user authentication</p>
+                `;
+            } else {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    <h4>❌ Authentication Status: MISSING</h4>
+                    <p><strong>Auth Token:</strong> ${authToken ? 'Present' : 'Missing'}</p>
+                    <p><strong>User Email:</strong> ${userEmail || 'Missing'}</p>
+                    <p><strong>Action:</strong> Need to set authentication</p>
+                `;
+            }
+        }
+
+        function fixAuth() {
+            // Set the correct JWT token for sunitha@gmail.com
+            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InN1bml0aGFAZ21haWwuY29tIiwiZXhwIjoxNzY3NjI2OTAzfQ.pKRKEKg42sRA8eM688aAolUbicvF4WvhfLULL5dsjVo';
+            
+            localStorage.setItem('authToken', token);
+            localStorage.setItem('user_email', 'sunitha@gmail.com');
+            
+            const statusDiv = document.getElementById('fixStatus');
+            statusDiv.className = 'status success';
+            statusDiv.innerHTML = `
+                <h4>✅ Authentication Fixed!</h4>
+                <p><strong>JWT Token:</strong> Set for sunitha@gmail.com</p>
+                <p><strong>User Email:</strong> sunitha@gmail.com</p>
+                <p><strong>Status:</strong> Ready to test orders</p>
+                <p><strong>Next:</strong> Test the Order API below</p>
+            `;
+        }
+
+        async function testOrderAPI() {
+            const statusDiv = document.getElementById('apiStatus');
+            statusDiv.className = 'status info';
+            statusDiv.innerHTML = '<h4>🔄 Testing Order API...</h4>';
+            
+            const authToken = localStorage.getItem('authToken');
+            
+            if (!authToken) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '<h4>❌ No auth token found. Please fix authentication first.</h4>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/user/orders', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const orders = data.orders || [];
+                    
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `
+                        <h4>✅ Order API Test: SUCCESS</h4>
+                        <p><strong>Status Code:</strong> ${response.status}</p>
+                        <p><strong>Orders Found:</strong> ${orders.length}</p>
+                        ${orders.map(order => `
+                            <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                                <strong>Order #${order.order_id}</strong><br>
+                                Amount: ₹${order.total_amount}<br>
+                                Status: ${order.order_status}<br>
+                                Date: ${new Date(order.created_at).toLocaleDateString()}
+                            </div>
+                        `).join('')}
+                        <p><strong>✅ Chat should now work! Test it by asking "show my orders"</strong></p>
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = `
+                        <h4>❌ Order API Test: FAILED</h4>
+                        <p><strong>Status Code:</strong> ${response.status}</p>
+                        <p><strong>Error:</strong> ${errorText}</p>
+                        <p><strong>Check:</strong> Make sure backend server is running on port 5000</p>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    <h4>❌ Order API Test: CONNECTION ERROR</h4>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Check:</strong> Backend server not running or not accessible</p>
+                    <p><strong>Solution:</strong> Run <code>python backend/app.py</code></p>
+                `;
+            }
+        }
+
+        // Auto-check auth status on page load
+        window.onload = function() {
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

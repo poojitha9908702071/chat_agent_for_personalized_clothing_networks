@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Order Placement Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .step {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .code {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Order Placement Fix Test</h1>
+        
+        <div class="status success">
+            <strong>✅ ORDER PLACEMENT FIXED</strong><br>
+            The checkout process now saves orders to both localStorage AND the database for chat integration!
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 What Was Fixed</h3>
+            <div class="status info">
+                <strong>Problem:</strong> Orders were only saved to localStorage, not to the database<br>
+                <strong>Solution:</strong> Modified checkout to save orders to both localStorage AND database via user isolation API<br>
+                <strong>Result:</strong> Orders now appear in chat immediately after placement
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 How to Test the Fix</h3>
+            
+            <div class="step">
+                <strong>Step 1: Login</strong>
+                <div class="code">
+                    1. Go to <a href="http://localhost:3000/login" target="_blank">http://localhost:3000/login</a><br>
+                    2. Login with any valid user (e.g., test@example.com / password123)<br>
+                    3. Verify you're logged in (check if JWT token exists)
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Step 2: Add Items to Cart</strong>
+                <div class="code">
+                    1. Go to <a href="http://localhost:3000/home" target="_blank">http://localhost:3000/home</a><br>
+                    2. Browse products and add 1-2 items to cart<br>
+                    3. Verify items appear in cart
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Step 3: Place Order</strong>
+                <div class="code">
+                    1. Go to cart and click "Proceed to Checkout"<br>
+                    2. Fill in shipping information<br>
+                    3. Select payment method<br>
+                    4. Click "Place Order"<br>
+                    5. Should redirect to order success page
+                </div>
+            </div>
+            
+            <div class="step">
+                <strong>Step 4: Test Chat Integration</strong>
+                <div class="code">
+                    1. Go back to <a href="http://localhost:3000/home" target="_blank">http://localhost:3000/home</a><br>
+                    2. Open chat assistant<br>
+                    3. Type: "my orders" or "order details"<br>
+                    4. Should now show your newly placed order!
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Technical Details</h3>
+            
+            <div class="status info">
+                <strong>Order Storage Process:</strong><br>
+                1. <strong>localStorage:</strong> For backward compatibility with existing UI<br>
+                2. <strong>Database:</strong> Via POST /api/user/orders for chat integration<br>
+                3. <strong>User Isolation:</strong> Each user's orders are completely separate<br>
+                4. <strong>JWT Authentication:</strong> Orders are tied to logged-in user
+            </div>
+            
+            <div class="code">
+                <strong>Backend API Call:</strong><br>
+                POST /api/user/orders<br>
+                Headers: Authorization: Bearer {JWT_TOKEN}<br>
+                Body: {<br>
+                &nbsp;&nbsp;order_id: "ORD12345678",<br>
+                &nbsp;&nbsp;total_amount: 2599,<br>
+                &nbsp;&nbsp;shipping_address: "Full Address",<br>
+                &nbsp;&nbsp;order_items: [{product_id, product_name, quantity, price}]<br>
+                }
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Expected Results</h3>
+            
+            <div class="step">
+                <strong>After Placing Order:</strong>
+                <ul>
+                    <li>✅ Order appears in "My Orders" page</li>
+                    <li>✅ Order appears in chat when asking "my orders"</li>
+                    <li>✅ Order is saved to database with user isolation</li>
+                    <li>✅ Order includes all product details and quantities</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <strong>Chat Response Example:</strong>
+                <div class="code">
+                    📦 **Your Recent Orders (1 total)**<br><br>
+                    **Order #ORD12345678**<br>
+                    ⏳ Status: Processing<br>
+                    📅 Date: 1/5/2026<br>
+                    💰 Total: ₹2,599<br>
+                    📦 2 items<br><br>
+                    💡 Go to 'My Orders' page for complete order management!
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Troubleshooting</h3>
+            
+            <div class="status warning">
+                <strong>If orders still don't show in chat:</strong><br>
+                1. Check browser console for errors during checkout<br>
+                2. Verify user is logged in (check localStorage for 'authToken')<br>
+                3. Check if backend is running on port 5000<br>
+                4. Verify JWT token is valid<br>
+                5. Check browser network tab for API calls during checkout
+            </div>
+            
+            <div class="code">
+                <strong>Debug Console Commands:</strong><br>
+                // Check if user is logged in<br>
+                localStorage.getItem('authToken')<br><br>
+                // Check localStorage orders<br>
+                JSON.parse(localStorage.getItem('orders') || '[]')<br><br>
+                // Check user email<br>
+                localStorage.getItem('user_email')
+            </div>
+        </div>
+
+        <div class="status success">
+            <strong>🎉 READY FOR TESTING</strong><br>
+            The order placement system is now fully integrated with the chat system. New orders will appear in chat immediately after placement!
+        </div>
+
+        <div class="status info">
+            <strong>🔗 Quick Test Links:</strong><br>
+            <button onclick="window.open('http://localhost:3000/login', '_blank')">Login Page</button>
+            <button onclick="window.open('http://localhost:3000/home', '_blank')">Home Page</button>
+            <button onclick="window.open('http://localhost:3000/cart', '_blank')">Cart Page</button>
+            <button onclick="window.open('http://localhost:3000/orders', '_blank')">Orders Page</button>
+        </div>
+    </div>
+
+    <script>
+        console.log('✅ Order Placement Fix Test Page Loaded');
+        console.log('🛒 Orders will now be saved to both localStorage and database');
+        console.log('💬 Chat integration should work for newly placed orders');
+    </script>
+</body>
+</html>

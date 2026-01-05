@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            width: 200px;
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            border-left-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        .error {
+            border-left-color: #f44336;
+            background: rgba(244, 67, 54, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Signup Backend Connection Test</h1>
+        <p>Test the connection between frontend and backend for user registration.</p>
+        
+        <div class="test-section">
+            <h3>🔍 Backend Health Check</h3>
+            <button onclick="testBackendHealth()">🏥 Check Backend Health</button>
+            <div class="result" id="healthResult">Click button to test backend connection...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Test User Registration</h3>
+            <div>
+                <input type="text" id="testName" placeholder="Full Name" value="Test User">
+                <input type="email" id="testEmail" placeholder="Email" value="testuser@example.com">
+                <input type="password" id="testPassword" placeholder="Password" value="password123">
+                <button onclick="testSignup()">✅ Test Signup</button>
+            </div>
+            <div class="result" id="signupResult">Enter details and click Test Signup...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔑 Test Login After Signup</h3>
+            <div>
+                <input type="email" id="loginEmail" placeholder="Email" value="testuser@example.com">
+                <input type="password" id="loginPassword" placeholder="Password" value="password123">
+                <button onclick="testLogin()">🔐 Test Login</button>
+            </div>
+            <div class="result" id="loginResult">Test signup first, then try login...</div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Connection Status</h3>
+            <div class="result" id="statusResult">
+Backend URL: http://localhost:5000
+Frontend URL: http://localhost:3000
+Expected: Both servers should be running and communicating
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:5000';
+
+        async function testBackendHealth() {
+            const resultDiv = document.getElementById('healthResult');
+            resultDiv.textContent = 'Testing backend connection...';
+            
+            try {
+                // Test basic backend connectivity
+                const response = await fetch(`${BACKEND_URL}/api/products/search?query=test&category=fashion`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.textContent = `✅ Backend is healthy!\n\nStatus: ${response.status}\nProducts found: ${data.products ? data.products.length : 0}\nResponse time: ${Date.now() - startTime}ms`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = `⚠️ Backend responded but with error:\nStatus: ${response.status}\nURL: ${BACKEND_URL}`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Backend connection failed:\n${error.message}\n\nMake sure backend is running on port 5000`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testSignup() {
+            const resultDiv = document.getElementById('signupResult');
+            const name = document.getElementById('testName').value;
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            
+            resultDiv.textContent = 'Testing user registration...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.textContent = `✅ Signup successful!\n\nMessage: ${result.message}\nToken received: ${result.token ? 'Yes' : 'No'}\nStatus: ${response.status}`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = `❌ Signup failed:\n\nError: ${result.error || result.message}\nStatus: ${response.status}`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Connection error during signup:\n${error.message}\n\nCheck if backend is running on port 5000`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            resultDiv.textContent = 'Testing user login...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.message === 'Login successful') {
+                    resultDiv.textContent = `✅ Login successful!\n\nUser: ${result.user.name} (${result.user.email})\nToken received: ${result.token ? 'Yes' : 'No'}\nStatus: ${response.status}`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = `❌ Login failed:\n\nError: ${result.error || result.message}\nStatus: ${response.status}`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Connection error during login:\n${error.message}\n\nCheck if backend is running on port 5000`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        // Auto-test backend health on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(testBackendHealth, 1000);
+        });
+    </script>
+</body>
+</html>

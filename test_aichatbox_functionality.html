@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIChatBox Functionality Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #4CAF50; background-color: #f0fff0; }
+        .error { border-color: #f44336; background-color: #fff0f0; }
+        .loading { border-color: #2196F3; background-color: #f0f8ff; }
+        
+        button {
+            background: #e91e63;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #c2185b; }
+        
+        .api-call {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .response-data {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            background: white;
+            font-size: 12px;
+        }
+        .product-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .product-title {
+            font-weight: bold;
+            margin: 5px 0;
+            height: 30px;
+            overflow: hidden;
+        }
+        .product-price {
+            color: #e91e63;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AIChatBox Functionality Test</h1>
+        <p>Testing all API endpoints that the AIChatBox component uses to ensure complete functionality.</p>
+    </div>
+
+    <div class="container">
+        <h2>🔍 Natural Language Search Tests</h2>
+        <p>Testing the main natural language search functionality:</p>
+        
+        <button onclick="testNaturalLanguageSearch()">Test Natural Language Search</button>
+        <button onclick="testFollowUpQuery()">Test Follow-up Query</button>
+        
+        <div id="nlSearchResults"></div>
+    </div>
+
+    <div class="container">
+        <h2>📦 Basic Product Search Tests</h2>
+        <p>Testing the basic product search used for general queries:</p>
+        
+        <button onclick="testBasicProductSearch()">Test Basic Product Search</button>
+        <button onclick="testCategorySearch()">Test Category-based Search</button>
+        
+        <div id="basicSearchResults"></div>
+    </div>
+
+    <div class="container">
+        <h2>🎯 Face Tone & Body Fit Flow Tests</h2>
+        <p>Testing the product fetching for Face Tone and Body Fit flows:</p>
+        
+        <button onclick="testFaceToneFlow()">Test Face Tone Product Fetch</button>
+        <button onclick="testBodyFitFlow()">Test Body Fit Product Fetch</button>
+        
+        <div id="flowResults"></div>
+    </div>
+
+    <div class="container">
+        <h2>🛒 Cart & Wishlist Tests</h2>
+        <p>Testing product detail fetching for cart and wishlist:</p>
+        
+        <button onclick="testProductDetails()">Test Product Details API</button>
+        
+        <div id="detailResults"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        
+        function addResult(containerId, title, status, message, apiCall = '', responseData = '', products = []) {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-section ${status}`;
+            
+            let productDisplay = '';
+            if (products && products.length > 0) {
+                productDisplay = `
+                    <div class="product-grid">
+                        ${products.slice(0, 6).map(p => `
+                            <div class="product-card">
+                                <img src="${p.image_url || p.product_image || '/placeholder.jpg'}" 
+                                     alt="${p.title || p.product_name}" 
+                                     class="product-image"
+                                     onerror="this.src='/placeholder.jpg'">
+                                <div class="product-title">${p.title || p.product_name}</div>
+                                <div class="product-price">₹${p.price}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${products.length > 6 ? `<p><em>Showing 6 of ${products.length} products</em></p>` : ''}
+                `;
+            }
+            
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <div>${message}</div>
+                ${apiCall ? `<div class="api-call"><strong>API Call:</strong> ${apiCall}</div>` : ''}
+                ${responseData ? `<div class="response-data"><strong>Response:</strong><br>${responseData}</div>` : ''}
+                ${productDisplay}
+            `;
+            
+            container.appendChild(resultDiv);
+        }
+        
+        async function testNaturalLanguageSearch() {
+            const query = 'blue shirts for men under 2000';
+            const apiCall = `POST ${API_BASE}/products/search-natural`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/products/search-natural`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                const message = `
+                    <p><strong>✅ SUCCESS!</strong> Natural language search is working perfectly.</p>
+                    <p><strong>Query:</strong> "${query}"</p>
+                    <p><strong>Results:</strong> ${data.count} products found</p>
+                    <p><strong>Filters Applied:</strong> ${JSON.stringify(data.filters_applied)}</p>
+                `;
+                
+                const responseData = JSON.stringify(data, null, 2);
+                
+                addResult('nlSearchResults', 'Natural Language Search Test', 'success', message, apiCall, responseData, data.products);
+                
+            } catch (error) {
+                addResult('nlSearchResults', 'Natural Language Search Test', 'error', 
+                    `<p><strong>❌ FAILED:</strong> ${error.message}</p>`, apiCall);
+            }
+        }
+        
+        async function testFollowUpQuery() {
+            const apiCall = `POST ${API_BASE}/products/search-natural (with override_filters)`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/products/search-natural`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: 'show under 1500',
+                        override_filters: {
+                            gender: 'Men',
+                            product_category: 'shirts',
+                            price_max: 1500
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                const message = `
+                    <p><strong>✅ SUCCESS!</strong> Follow-up query functionality is working.</p>
+                    <p><strong>Context:</strong> Previous search for "shirts for men"</p>
+                    <p><strong>Follow-up:</strong> "show under 1500"</p>
+                    <p><strong>Results:</strong> ${data.count} products found</p>
+                    <p><strong>Final Filters:</strong> ${JSON.stringify(data.filters_applied)}</p>
+                `;
+                
+                const responseData = JSON.stringify(data, null, 2);
+                
+                addResult('nlSearchResults', 'Follow-up Query Test', 'success', message, apiCall, responseData, data.products);
+                
+            } catch (error) {
+                addResult('nlSearchResults', 'Follow-up Query Test', 'error', 
+                    `<p><strong>❌ FAILED:</strong> ${error.message}</p>`, apiCall);
+            }
+        }
+        
+        async function testBasicProductSearch() {
+            const query = 'clothing';
+            const category = 'fashion';
+            const apiCall = `GET ${API_BASE}/products/search?query=${query}&category=${category}`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/products/search?query=${encodeURIComponent(query)}&category=${category}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                const message = `
+                    <p><strong>✅ SUCCESS!</strong> Basic product search is working (this was the 404 error).</p>
+                    <p><strong>Query:</strong> "${query}"</p>
+                    <p><strong>Category:</strong> "${category}"</p>
+                    <p><strong>Results:</strong> ${data.count} products found</p>
+                `;
+                
+                const responseData = JSON.stringify(data, null, 2);
+                
+                addResult('basicSearchResults', 'Basic Product Search Test', 'success', message, apiCall, responseData, data.products);
+                
+            } catch (error) {
+                addResult('basicSearchResults', 'Basic Product Search Test', 'error', 
+                    `<p><strong>❌ FAILED:</strong> ${error.message} - This was the original 404 error!</p>`, apiCall);
+            }
+        }
+        
+        async function testCategorySearch() {
+            const category = 'fashion';
+            const apiCall = `GET ${API_BASE}/products/category/${category}`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/products/category/${category}?limit=10`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                const message = `
+                    <p><strong>✅ SUCCESS!</strong> Category-based search is working.</p>
+                    <p><strong>Category:</strong> "${category}"</p>
+                    <p><strong>Results:</strong> ${data.count} products found</p>
+                `;
+                
+                const responseData = JSON.stringify(data, null, 2);
+                
+                addResult('basicSearchResults', 'Category Search Test', 'success', message, apiCall, responseData, data.products);
+                
+            } catch (error) {
+                addResult('basicSearchResults', 'Category Search Test', 'error', 
+                    `<p><strong>❌ FAILED:</strong> ${error.message}</p>`, apiCall);
+            }
+        }
+        
+        async function testFaceToneFlow() {
+            // Simulate the Face Tone flow product fetch
+            const apiCall = `GET ${API_BASE}/products/search?query=clothing&category=fashion (Face Tone Flow)`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/products/search?query=clothing&category=fashion`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Simulate Face Tone filtering (Fair skin tone → Blue/Black colors)
+                const faceToneProducts = data.products.filter(p => 
+                    p.color && (p.color.toLowerCase().includes('blue') || p.color.toLowerCase().includes('black'))
+                );
+                
+                const message = `
+                    <p><strong>✅ SUCCESS!</strong> Face Tone flow product fetching is working.</p>
+                    <p><strong>Simulation:</strong> Fair skin tone → Blue/Black colors</p>
+                    <p><strong>Total Products:</strong> ${data.count}</p>
+                    <p><strong>Filtered for Face Tone:</strong> ${faceToneProducts.length} products</p>
+                `;
+                
+                addResult('flowResults', 'Face Tone Flow Test', 'success', message, apiCall, '', faceToneProducts);
+                
+            } catch (error) {
+                addResult('flowResults', 'Face Tone Flow Test', 'error', 
+                    `<p><strong>❌ FAILED:</strong> ${error.message}</p>`, apiCall);
+            }
+        }
+        
+        async function testBodyFitFlow() {
+            // Simulate the Body Fit flow product fetch
+            const apiCall = `GET ${API_BASE}/products/search?query=clothing&category=fashion (Body Fit Flow)`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/products/search?query=clothing&category=fashion`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Simulate Body Fit filtering (Men + Shirts)
+                const bodyFitProducts = data.products.filter(p => 
+                    p.gender && p.gender.toLowerCase() === 'men' &&
+                    p.category && p.category.toLowerCase().includes('shirt')
+                );
+                
+                const message = `
+                    <p><strong>✅ SUCCESS!</strong> Body Fit flow product fetching is working.</p>
+                    <p><strong>Simulation:</strong> Men + Shirts category</p>
+                    <p><strong>Total Products:</strong> ${data.count}</p>
+                    <p><strong>Filtered for Body Fit:</strong> ${bodyFitProducts.length} products</p>
+                `;
+                
+                addResult('flowResults', 'Body Fit Flow Test', 'success', message, apiCall, '', bodyFitProducts);
+                
+            } catch (error) {
+                addResult('flowResults', 'Body Fit Flow Test', 'error', 
+                    `<p><strong>❌ FAILED:</strong> ${error.message}</p>`, apiCall);
+            }
+        }
+        
+        async function testProductDetails() {
+            const apiCall = `GET ${API_BASE}/products/{id} (Product Details)`;
+            
+            try {
+                // First get a product ID
+                const searchResponse = await fetch(`${API_BASE}/products/search?query=clothing&category=fashion`);
+                const searchData = await searchResponse.json();
+                
+                if (!searchData.products || searchData.products.length === 0) {
+                    throw new Error('No products found to test details');
+                }
+                
+                const productId = searchData.products[0].product_id;
+                
+                // Now test product details
+                const response = await fetch(`${API_BASE}/products/${productId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                const message = `
+                    <p><strong>✅ SUCCESS!</strong> Product details API is working.</p>
+                    <p><strong>Product ID:</strong> ${productId}</p>
+                    <p><strong>Product Name:</strong> ${data.product.title}</p>
+                    <p><strong>Price:</strong> ₹${data.product.price}</p>
+                `;
+                
+                const responseData = JSON.stringify(data, null, 2);
+                
+                addResult('detailResults', 'Product Details Test', 'success', message, 
+                    `${apiCall.replace('{id}', productId)}`, responseData, [data.product]);
+                
+            } catch (error) {
+                addResult('detailResults', 'Product Details Test', 'error', 
+                    `<p><strong>❌ FAILED:</strong> ${error.message}</p>`, apiCall);
+            }
+        }
+        
+        // Auto-run basic tests on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testBasicProductSearch();
+                setTimeout(() => testNaturalLanguageSearch(), 1000);
+            }, 500);
+        };
+    </script>
+</body>
+</html>

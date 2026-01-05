@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart, Wishlist & Orders Chat Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-step {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        .code {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .query-examples {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒❤️📦 Cart, Wishlist & Orders Chat Test</h1>
+        <p><strong>Testing user-isolated cart, wishlist, and orders queries in chat:</strong></p>
+        <ul>
+            <li>✅ Cart queries show user-specific cart items</li>
+            <li>✅ Wishlist queries show user-specific wishlist items</li>
+            <li>✅ Order queries show user-specific order history</li>
+            <li>✅ Complete user isolation maintained</li>
+            <li>✅ Proper authentication required</li>
+        </ul>
+
+        <div class="test-section">
+            <h3>🛒 Cart Query Testing</h3>
+            
+            <div class="query-examples">
+                <strong>📝 Cart Query Examples to Test:</strong>
+                <div class="code">
+                    • "show my cart"<br>
+                    • "what's in my cart"<br>
+                    • "cart items"<br>
+                    • "view cart"<br>
+                    • "shopping cart"<br>
+                    • "cart details"
+                </div>
+            </div>
+
+            <div class="test-step">
+                <strong>Step 1:</strong> Login as User 1 (e.g., poojitha@gmail.com)
+                <div class="code">
+                    1. Go to /login<br>
+                    2. Login with: poojitha@gmail.com / password123<br>
+                    3. Navigate to /home
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 2:</strong> Add items to cart
+                <div class="code">
+                    1. Browse products and add 2-3 items to cart<br>
+                    2. Verify items are in cart via cart page<br>
+                    3. Note the specific items added
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 3:</strong> Test cart queries in chat
+                <div class="code">
+                    1. Open chat assistant<br>
+                    2. Ask: "show my cart"<br>
+                    3. Should display user's cart items with details<br>
+                    4. Try other cart queries from examples above
+                </div>
+            </div>
+            
+            <div class="status success">
+                ✅ <strong>Expected Result:</strong> Chat shows User 1's cart items with product details, quantities, and total
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>❤️ Wishlist Query Testing</h3>
+            
+            <div class="query-examples">
+                <strong>📝 Wishlist Query Examples to Test:</strong>
+                <div class="code">
+                    • "show my wishlist"<br>
+                    • "my favorites"<br>
+                    • "wishlist items"<br>
+                    • "saved products"<br>
+                    • "saved items"<br>
+                    • "my wish list"
+                </div>
+            </div>
+
+            <div class="test-step">
+                <strong>Step 1:</strong> Continue with same user (poojitha@gmail.com)
+                <div class="code">
+                    User should still be logged in from previous test
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 2:</strong> Add items to wishlist
+                <div class="code">
+                    1. Browse products and add 2-3 items to wishlist<br>
+                    2. Verify items are in wishlist via wishlist page<br>
+                    3. Note the specific items added
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 3:</strong> Test wishlist queries in chat
+                <div class="code">
+                    1. Open chat assistant<br>
+                    2. Ask: "show my wishlist"<br>
+                    3. Should display user's wishlist items<br>
+                    4. Try other wishlist queries from examples above
+                </div>
+            </div>
+            
+            <div class="status success">
+                ✅ <strong>Expected Result:</strong> Chat shows User 1's wishlist items with product details and save dates
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📦 Orders Query Testing</h3>
+            
+            <div class="query-examples">
+                <strong>📝 Orders Query Examples to Test:</strong>
+                <div class="code">
+                    • "show my orders"<br>
+                    • "my orders"<br>
+                    • "order history"<br>
+                    • "recent orders"<br>
+                    • "purchase history"<br>
+                    • "what did I order"
+                </div>
+            </div>
+
+            <div class="test-step">
+                <strong>Step 1:</strong> Continue with same user (poojitha@gmail.com)
+                <div class="code">
+                    User should have existing orders from previous tests
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 2:</strong> Verify user has orders
+                <div class="code">
+                    1. Go to /orders page<br>
+                    2. Check if user has any orders<br>
+                    3. If no orders, place a test order first<br>
+                    4. Note the order details
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 3:</strong> Test order queries in chat
+                <div class="code">
+                    1. Open chat assistant<br>
+                    2. Ask: "show my orders"<br>
+                    3. Should display user's order history<br>
+                    4. Try other order queries from examples above
+                </div>
+            </div>
+            
+            <div class="status success">
+                ✅ <strong>Expected Result:</strong> Chat shows User 1's orders with order IDs, dates, status, and totals
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>👥 User Isolation Testing</h3>
+            
+            <div class="test-step">
+                <strong>Step 1:</strong> Test with User 1 (poojitha@gmail.com)
+                <div class="code">
+                    1. Complete all cart, wishlist, and order queries<br>
+                    2. Note the specific items/orders shown<br>
+                    3. Logout from the system
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 2:</strong> Test with User 2 (nithyasree@gmail.com)
+                <div class="code">
+                    1. Login as different user<br>
+                    2. Add different items to cart and wishlist<br>
+                    3. Place different orders (if needed)<br>
+                    4. Test same queries in chat
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 3:</strong> Verify complete isolation
+                <div class="code">
+                    1. User 2 should see only their own cart items<br>
+                    2. User 2 should see only their own wishlist items<br>
+                    3. User 2 should see only their own orders<br>
+                    4. No mixing of data between users
+                </div>
+            </div>
+            
+            <div class="status warning">
+                🔒 <strong>Critical:</strong> Each user must see only their own data - no cross-user leakage allowed
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔐 Authentication Testing</h3>
+            
+            <div class="test-step">
+                <strong>Step 1:</strong> Test without login
+                <div class="code">
+                    1. Logout from system<br>
+                    2. Go to /home as guest<br>
+                    3. Open chat assistant<br>
+                    4. Try cart/wishlist/order queries
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Step 2:</strong> Verify authentication required
+                <div class="code">
+                    1. Should show "Please log in" message<br>
+                    2. Should not display any user data<br>
+                    3. Should maintain privacy protection
+                </div>
+            </div>
+            
+            <div class="status info">
+                🔐 <strong>Expected:</strong> Authentication required message for all cart/wishlist/order queries when not logged in
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Technical Verification</h3>
+            
+            <div class="test-step">
+                <strong>API Calls Check:</strong>
+                <div class="code">
+                    1. Open DevTools → Network tab<br>
+                    2. Test cart query → Should see GET /api/user/cart<br>
+                    3. Test wishlist query → Should see GET /api/user/wishlist<br>
+                    4. Test orders query → Should see GET /api/user/orders<br>
+                    5. All requests should include JWT token
+                </div>
+            </div>
+            
+            <div class="test-step">
+                <strong>Database Isolation Check:</strong>
+                <div class="code">
+                    1. Check user_cart table → filtered by user_email<br>
+                    2. Check user_wishlist table → filtered by user_email<br>
+                    3. Check user_orders table → filtered by user_email<br>
+                    4. No cross-user data access possible
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Test Results Checklist</h3>
+            <div class="test-step">
+                <input type="checkbox" id="test1"> <label for="test1">Cart queries show user-specific items</label><br>
+                <input type="checkbox" id="test2"> <label for="test2">Wishlist queries show user-specific items</label><br>
+                <input type="checkbox" id="test3"> <label for="test3">Order queries show user-specific orders</label><br>
+                <input type="checkbox" id="test4"> <label for="test4">Complete user isolation maintained</label><br>
+                <input type="checkbox" id="test5"> <label for="test5">Authentication required for all queries</label><br>
+                <input type="checkbox" id="test6"> <label for="test6">No cross-user data leakage</label><br>
+                <input type="checkbox" id="test7"> <label for="test7">Proper error handling for empty data</label><br>
+                <input type="checkbox" id="test8"> <label for="test8">JWT authentication working for all API calls</label><br>
+            </div>
+        </div>
+
+        <div class="status success">
+            <strong>🎯 Success Criteria:</strong><br>
+            ✅ Each user sees only their own cart, wishlist, and orders<br>
+            ✅ Authentication required for all personal data queries<br>
+            ✅ Proper user isolation maintained at database level<br>
+            ✅ Chat responses are user-specific and accurate<br>
+            ✅ System works for ALL registered users<br>
+        </div>
+
+        <div class="status info">
+            <strong>🔗 Quick Test Links:</strong><br>
+            <button onclick="window.open('/login', '_blank')">Login Page</button>
+            <button onclick="window.open('/home', '_blank')">Home Page</button>
+            <button onclick="window.open('/cart', '_blank')">Cart Page</button>
+            <button onclick="window.open('/wishlist', '_blank')">Wishlist Page</button>
+            <button onclick="window.open('/orders', '_blank')">Orders Page</button>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Cart, Wishlist & Orders Chat Test Page Loaded');
+            console.log('Ready to test user-isolated cart, wishlist, and orders queries');
+            
+            // Check if we're in the right environment
+            if (window.location.hostname === 'localhost') {
+                console.log('✅ Running on localhost - ready for testing');
+            } else {
+                console.warn('⚠️ Not running on localhost - make sure backend is accessible');
+            }
+        });
+    </script>
+</body>
+</html>

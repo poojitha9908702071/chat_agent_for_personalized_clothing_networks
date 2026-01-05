@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏋️ NEW BODY FIT FLOW TEST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .flow-rule {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .mapping-section {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .product-title {
+            font-weight: bold;
+            margin: 8px 0 4px 0;
+            font-size: 14px;
+        }
+        .product-details {
+            font-size: 12px;
+            color: #666;
+        }
+        .filter-test {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .step {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .mapping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .mapping-table th, .mapping-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .mapping-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏋️ NEW BODY FIT FLOW TEST</h1>
+    
+    <div class="flow-rule">
+        🎯 NEW BODY FIT FLOW: Gender → Body Shape → Category Assignment → Color → STRICT Product Filtering<br>
+        🔥 FILTERING RULE: product.gender == selected_gender AND product.category == selected_category AND product.color == selected_color
+    </div>
+
+    <div class="test-section">
+        <h2>📋 FLOW SPECIFICATION</h2>
+        
+        <div class="step">
+            <strong>STEP 1:</strong> Ask Gender → Men, Women
+        </div>
+        
+        <div class="step">
+            <strong>STEP 2:</strong> Ask Body Shape (Gender-Specific)
+        </div>
+        
+        <div class="mapping-section">
+            <h3>👗 WOMEN BODY SHAPES</h3>
+            <ul>
+                <li>Pear Shape</li>
+                <li>Apple Shape</li>
+                <li>Hourglass Shape</li>
+                <li>Rectangle Shape</li>
+            </ul>
+        </div>
+        
+        <div class="mapping-section">
+            <h3>👕 MEN BODY SHAPES</h3>
+            <ul>
+                <li>Slim</li>
+                <li>Athletic</li>
+                <li>Muscular</li>
+                <li>Plus Size</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <strong>STEP 3:</strong> BODY SHAPE → CATEGORY ASSIGNMENT (STRICT)
+        </div>
+        
+        <div class="mapping-section">
+            <h3>👗 WOMEN – BODY SHAPE CATEGORY MAPPING</h3>
+            <table class="mapping-table">
+                <tr><th>Body Shape</th><th>Assigned Categories</th></tr>
+                <tr><td>Pear Shape</td><td>Western Wear, Dresses, Tops and Co-ord Sets</td></tr>
+                <tr><td>Apple Shape</td><td>Dresses, Tops and Co-ord Sets, Women's Bottomwear</td></tr>
+                <tr><td>Hourglass Shape</td><td>Western Wear, Dresses, Ethnic Wear</td></tr>
+                <tr><td>Rectangle Shape</td><td>Western Wear, Dresses, Women's Bottomwear</td></tr>
+            </table>
+        </div>
+        
+        <div class="mapping-section">
+            <h3>👕 MEN – BODY SHAPE CATEGORY MAPPING</h3>
+            <table class="mapping-table">
+                <tr><th>Body Shape</th><th>Assigned Categories</th></tr>
+                <tr><td>Slim</td><td>Shirts, T-shirts</td></tr>
+                <tr><td>Athletic</td><td>Shirts, T-shirts, Bottom Wear</td></tr>
+                <tr><td>Muscular</td><td>T-shirts, Hoodies</td></tr>
+                <tr><td>Plus Size</td><td>Shirts, Bottom Wear, Hoodies</td></tr>
+            </table>
+        </div>
+        
+        <div class="step">
+            <strong>STEP 4:</strong> Color Selection → Red, Pink, Black, White, Green, Grey, Blue
+        </div>
+        
+        <div class="step">
+            <strong>STEP 5:</strong> STRICT Product Filtering (ALL conditions must match)
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Backend Connection Test</h2>
+        <button onclick="testBackendConnection()">Test Backend Connection</button>
+        <div id="connectionResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>👗 WOMEN BODY FIT FLOW TESTS</h2>
+        
+        <div class="filter-test">
+            <h3>Test Case 1: Women + Pear Shape + Dresses + Red</h3>
+            <p><strong>Expected:</strong> Red Women Dresses ONLY</p>
+            <button onclick="testBodyFitFiltering('women', 'pear shape', 'dresses', 'red')">Test Pear Shape Red Dresses</button>
+            <div id="womenTest1"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 2: Women + Apple Shape + Tops and Co-ord Sets + Blue</h3>
+            <p><strong>Expected:</strong> Blue Women Tops and Co-ord Sets ONLY</p>
+            <button onclick="testBodyFitFiltering('women', 'apple shape', 'tops and co-ord sets', 'blue')">Test Apple Shape Blue Tops</button>
+            <div id="womenTest2"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 3: Women + Hourglass Shape + Ethnic Wear + Green</h3>
+            <p><strong>Expected:</strong> Green Women Ethnic Wear ONLY</p>
+            <button onclick="testBodyFitFiltering('women', 'hourglass shape', 'ethnic wear', 'green')">Test Hourglass Green Ethnic</button>
+            <div id="womenTest3"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>👕 MEN BODY FIT FLOW TESTS</h2>
+        
+        <div class="filter-test">
+            <h3>Test Case 1: Men + Slim + Shirts + Black</h3>
+            <p><strong>Expected:</strong> Black Men Shirts ONLY (NOT T-shirts)</p>
+            <button onclick="testBodyFitFiltering('men', 'slim', 'shirts', 'black')">Test Slim Black Shirts</button>
+            <div id="menTest1"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 2: Men + Athletic + T-shirts + White</h3>
+            <p><strong>Expected:</strong> White Men T-shirts ONLY (NOT Shirts)</p>
+            <button onclick="testBodyFitFiltering('men', 'athletic', 't-shirts', 'white')">Test Athletic White T-shirts</button>
+            <div id="menTest2"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>Test Case 3: Men + Muscular + Hoodies + Grey</h3>
+            <p><strong>Expected:</strong> Grey Men Hoodies ONLY</p>
+            <button onclick="testBodyFitFiltering('men', 'muscular', 'hoodies', 'grey')">Test Muscular Grey Hoodies</button>
+            <div id="menTest3"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<div class="info">Testing backend connection...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Backend connection successful!<br>
+                        📊 Total products: ${data.products ? data.products.length : 0}<br>
+                        🔗 API Status: ${response.status}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Backend connection failed!<br>
+                        Error: ${error.message}<br>
+                        💡 Make sure the backend server is running on port 5000
+                    </div>
+                `;
+            }
+        }
+
+        async function testBodyFitFiltering(selectedGender, selectedBodyShape, selectedCategory, selectedColor) {
+            // Determine test ID based on gender and test number
+            let testId;
+            if (selectedGender === 'women') {
+                if (selectedBodyShape === 'pear shape') testId = 'womenTest1';
+                else if (selectedBodyShape === 'apple shape') testId = 'womenTest2';
+                else testId = 'womenTest3';
+            } else {
+                if (selectedBodyShape === 'slim') testId = 'menTest1';
+                else if (selectedBodyShape === 'athletic') testId = 'menTest2';
+                else testId = 'menTest3';
+            }
+            
+            const resultDiv = document.getElementById(testId);
+            resultDiv.innerHTML = '<div class="info">Testing NEW Body Fit filtering...</div>';
+            
+            try {
+                // Get all products first
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Apply STRICT filtering logic (same as new component)
+                const filteredProducts = (data.products || []).filter((p) => {
+                    // STRICT Gender matching (exact equality)
+                    const matchesGender = p.gender?.toLowerCase() === selectedGender.toLowerCase();
+                    
+                    // STRICT Color matching (exact equality)
+                    const matchesColor = p.color?.toLowerCase() === selectedColor.toLowerCase();
+                    
+                    // STRICT Category matching (exact equality)
+                    let matchesCategory = false;
+                    const productCategory = p.category?.toLowerCase() || '';
+                    const category = selectedCategory.toLowerCase();
+                    
+                    if (category === 'shirts') {
+                        matchesCategory = productCategory === 'shirts' || productCategory === 'shirt';
+                    } else if (category === 't-shirts') {
+                        matchesCategory = productCategory === 't-shirts' || productCategory === 't-shirt' || productCategory === 'tshirts' || productCategory === 'tshirt';
+                    } else if (category === 'dresses') {
+                        matchesCategory = productCategory === 'dresses' || productCategory === 'dress';
+                    } else if (category === 'western wear') {
+                        matchesCategory = productCategory === 'western wear' || productCategory === 'western';
+                    } else if (category === 'ethnic wear') {
+                        matchesCategory = productCategory === 'ethnic wear' || productCategory === 'ethnic' || productCategory === 'traditional';
+                    } else if (category === 'tops and co-ord sets') {
+                        matchesCategory = productCategory === 'tops and co-ord sets' || productCategory === 'tops' || productCategory === 'coord sets';
+                    } else if (category === "women's bottomwear") {
+                        matchesCategory = productCategory === "women's bottomwear" || productCategory === 'womens bottomwear';
+                    } else if (category === 'bottom wear') {
+                        matchesCategory = productCategory === 'bottom wear' || productCategory === 'pants' || productCategory === 'jeans' || productCategory === 'trousers';
+                    } else if (category === 'hoodies') {
+                        matchesCategory = productCategory === 'hoodies' || productCategory === 'hoodie' || productCategory === 'sweatshirts' || productCategory === 'sweatshirt';
+                    } else {
+                        matchesCategory = productCategory === category;
+                    }
+                    
+                    // 🔥 STRICT AND LOGIC: ALL conditions must be true
+                    return matchesGender && matchesColor && matchesCategory;
+                });
+                
+                const totalProducts = data.products ? data.products.length : 0;
+                const matchedProducts = filteredProducts.length;
+                
+                let resultHTML = `
+                    <div class="success">
+                        ✅ NEW Body Fit filtering test completed!<br>
+                        📊 Total products: ${totalProducts}<br>
+                        🎯 Matched products: ${matchedProducts}<br>
+                        🔍 Filters: Gender=${selectedGender}, BodyShape=${selectedBodyShape}, Category=${selectedCategory}, Color=${selectedColor}
+                    </div>
+                `;
+                
+                if (matchedProducts > 0) {
+                    resultHTML += '<div class="product-grid">';
+                    filteredProducts.slice(0, 6).forEach(product => {
+                        // Check for violations
+                        const genderMatch = product.gender?.toLowerCase() === selectedGender.toLowerCase();
+                        const colorMatch = product.color?.toLowerCase() === selectedColor.toLowerCase();
+                        const categoryMatch = product.category?.toLowerCase().includes(selectedCategory.toLowerCase());
+                        
+                        const violationClass = (!genderMatch || !colorMatch || !categoryMatch) ? 'violation' : '';
+                        
+                        resultHTML += `
+                            <div class="product-card ${violationClass}">
+                                <img src="${product.image_url}" alt="${product.title}" class="product-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+                                <div class="product-title">${product.title}</div>
+                                <div class="product-details">
+                                    💰 ₹${product.price}<br>
+                                    👤 ${product.gender || 'N/A'} ${genderMatch ? '✅' : '❌'}<br>
+                                    🎨 ${product.color || 'N/A'} ${colorMatch ? '✅' : '❌'}<br>
+                                    📂 ${product.category || 'N/A'} ${categoryMatch ? '✅' : '❌'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    resultHTML += '</div>';
+                } else {
+                    resultHTML += '<div class="warning">⚠️ No products matched the STRICT filtering criteria. Expected message: "Sorry, no products found matching your selected gender, category, color, and body shape. Please try another option."</div>';
+                }
+                
+                resultDiv.innerHTML = resultHTML;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ NEW Body Fit filtering test failed!<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test backend connection on page load
+        window.addEventListener('load', () => {
+            testBackendConnection();
+        });
+    </script>
+</body>
+</html>

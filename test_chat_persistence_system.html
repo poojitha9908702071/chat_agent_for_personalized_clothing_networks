@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Persistence System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .test-step {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        .code {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Chat Persistence System Test</h1>
+        <p><strong>Testing the new chat persistence requirements:</strong></p>
+        <ul>
+            <li>✅ Chat remains visible during active login session</li>
+            <li>✅ Chat history saved to database only on logout</li>
+            <li>✅ Chat history restored from database on login</li>
+            <li>✅ Session storage used during active session</li>
+            <li>✅ Complete user isolation maintained</li>
+        </ul>
+
+        <div class="test-section">
+            <h3>🧪 Test Scenario 1: Active Session Persistence</h3>
+            <div class="test-step">
+                <strong>Step 1:</strong> Login as any user (e.g., poojitha@gmail.com)
+                <div class="code">
+                    1. Go to /login<br>
+                    2. Login with: poojitha@gmail.com / password123<br>
+                    3. Navigate to /home
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 2:</strong> Start a chat conversation
+                <div class="code">
+                    1. Open chat assistant<br>
+                    2. Send several messages (e.g., "show blue shirts for men")<br>
+                    3. Get product recommendations<br>
+                    4. Continue conversation with follow-ups
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 3:</strong> Navigate between pages
+                <div class="code">
+                    1. Go to /women page<br>
+                    2. Go to /men page<br>
+                    3. Go to /orders page<br>
+                    4. Return to /home<br>
+                    <strong>Expected:</strong> Chat should remain visible with full conversation history
+                </div>
+            </div>
+            <div class="status info">
+                ✅ <strong>Expected Result:</strong> Chat conversation persists across all page navigations during active session
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔐 Test Scenario 2: Logout Chat Persistence</h3>
+            <div class="test-step">
+                <strong>Step 1:</strong> Continue from previous test with active chat
+                <div class="code">
+                    Ensure you have an active chat conversation with multiple messages
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 2:</strong> Logout from the system
+                <div class="code">
+                    1. Click profile dropdown in header<br>
+                    2. Click "Logout" button<br>
+                    3. Should redirect to /login page
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 3:</strong> Verify chat is cleared
+                <div class="code">
+                    1. Chat window should be closed/cleared<br>
+                    2. Session storage should be cleared<br>
+                    3. Chat history should be saved to database
+                </div>
+            </div>
+            <div class="status success">
+                ✅ <strong>Expected Result:</strong> Chat history saved to database, session cleared, user logged out
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 Test Scenario 3: Login Chat Restoration</h3>
+            <div class="test-step">
+                <strong>Step 1:</strong> Login as the same user again
+                <div class="code">
+                    1. Login with same credentials (poojitha@gmail.com)<br>
+                    2. Navigate to /home
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 2:</strong> Open chat assistant
+                <div class="code">
+                    1. Click chat icon to open assistant<br>
+                    2. Check if previous conversation is restored
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 3:</strong> Verify chat history restoration
+                <div class="code">
+                    1. All previous messages should be visible<br>
+                    2. Product recommendations should be displayed<br>
+                    3. Chat should be fully functional<br>
+                    4. Can continue conversation from where left off
+                </div>
+            </div>
+            <div class="status success">
+                ✅ <strong>Expected Result:</strong> Complete chat history restored from database on login
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>👥 Test Scenario 4: User Isolation Verification</h3>
+            <div class="test-step">
+                <strong>Step 1:</strong> Test with first user (poojitha@gmail.com)
+                <div class="code">
+                    1. Login and create unique chat conversation<br>
+                    2. Send messages like "show red dresses for women"<br>
+                    3. Note the specific conversation content<br>
+                    4. Logout
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 2:</strong> Test with second user (nithyasree@gmail.com)
+                <div class="code">
+                    1. Login as different user<br>
+                    2. Open chat assistant<br>
+                    3. Should start with fresh chat (no previous user's history)<br>
+                    4. Create different conversation (e.g., "show blue shirts for men")<br>
+                    5. Logout
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Step 3:</strong> Verify complete isolation
+                <div class="code">
+                    1. Login back as first user (poojitha@gmail.com)<br>
+                    2. Chat should restore ONLY first user's conversation<br>
+                    3. No mixing of chat histories between users<br>
+                    4. Each user sees only their own chat history
+                </div>
+            </div>
+            <div class="status warning">
+                🔒 <strong>Critical:</strong> No cross-user data leakage - each user must see only their own chat history
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Technical Implementation Verification</h3>
+            <div class="test-step">
+                <strong>Session Storage Check:</strong>
+                <div class="code">
+                    1. Open browser DevTools → Application → Session Storage<br>
+                    2. During active session: Should see 'fashionpulse_active_chat'<br>
+                    3. After logout: Session storage should be cleared<br>
+                    4. After login: Should see restored chat in session storage
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Database Persistence Check:</strong>
+                <div class="code">
+                    1. Check user_chat_history table in database<br>
+                    2. Should see messages saved with correct user_email<br>
+                    3. Each user's messages isolated by user_email field<br>
+                    4. Session_id used to group conversation
+                </div>
+            </div>
+            <div class="test-step">
+                <strong>Network Requests Check:</strong>
+                <div class="code">
+                    1. Open DevTools → Network tab<br>
+                    2. During logout: Should see POST to /api/user/chat-history<br>
+                    3. During login: Should see GET from /api/user/chat-history<br>
+                    4. All requests include JWT token for user isolation
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Test Results Checklist</h3>
+            <div class="test-step">
+                <input type="checkbox" id="test1"> <label for="test1">Chat persists during active session navigation</label><br>
+                <input type="checkbox" id="test2"> <label for="test2">Chat history saved to database on logout</label><br>
+                <input type="checkbox" id="test3"> <label for="test3">Chat history restored from database on login</label><br>
+                <input type="checkbox" id="test4"> <label for="test4">Session storage used during active session</label><br>
+                <input type="checkbox" id="test5"> <label for="test5">Session storage cleared on logout</label><br>
+                <input type="checkbox" id="test6"> <label for="test6">Complete user isolation maintained</label><br>
+                <input type="checkbox" id="test7"> <label for="test7">No cross-user chat history mixing</label><br>
+                <input type="checkbox" id="test8"> <label for="test8">JWT authentication working for all API calls</label><br>
+            </div>
+        </div>
+
+        <div class="status success">
+            <strong>🎯 Success Criteria:</strong><br>
+            ✅ Chat remains alive during entire login session<br>
+            ✅ Chat history saved only on logout (not on every message)<br>
+            ✅ Chat history restored only on login (not on page navigation)<br>
+            ✅ Each user sees only their own chat history<br>
+            ✅ System works for ALL registered users<br>
+        </div>
+
+        <div class="status info">
+            <strong>🔗 Quick Test Links:</strong><br>
+            <button onclick="window.open('/login', '_blank')">Login Page</button>
+            <button onclick="window.open('/home', '_blank')">Home Page</button>
+            <button onclick="window.open('/orders', '_blank')">Orders Page</button>
+            <button onclick="window.open('/women', '_blank')">Women Page</button>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Chat Persistence System Test Page Loaded');
+            console.log('Ready to test the new chat persistence implementation');
+            
+            // Check if we're in the right environment
+            if (window.location.hostname === 'localhost') {
+                console.log('✅ Running on localhost - ready for testing');
+            } else {
+                console.warn('⚠️ Not running on localhost - make sure backend is accessible');
+            }
+        });
+    </script>
+</body>
+</html>

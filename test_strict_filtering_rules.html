@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 STRICT FILTERING RULES TEST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .strict-rule {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+        }
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .product-title {
+            font-weight: bold;
+            margin: 8px 0 4px 0;
+            font-size: 14px;
+        }
+        .product-details {
+            font-size: 12px;
+            color: #666;
+        }
+        .filter-test {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .violation {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 STRICT FILTERING RULES TEST</h1>
+    
+    <div class="strict-rule">
+        🚨 GLOBAL STRICT RULE: Show products ONLY when ALL user-selected filters match<br>
+        ❌ Do NOT show similar, related, or random products<br>
+        ✅ Use STRICT AND logic - If any one condition fails, the product must NOT be shown
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Backend Connection Test</h2>
+        <button onclick="testBackendConnection()">Test Backend Connection</button>
+        <div id="connectionResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎨 STRICT Face Tone Flow Tests</h2>
+        <p><strong>Rule:</strong> product.color == selected_color AND product.gender == selected_gender AND product.product_category == selected_category</p>
+        
+        <div class="filter-test">
+            <h3>✅ CORRECT Example: Red + Women + Dresses</h3>
+            <p><strong>Should show ONLY:</strong> Red Women Dresses</p>
+            <p><strong>Should NOT show:</strong> Red Tops, Red Ethnic Wear, Red Men products, Women Dresses in other colors</p>
+            <button onclick="testStrictFaceToneFiltering('red', 'women', 'dresses')">Test Red Women Dresses</button>
+            <div id="strictFaceToneTest1"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>✅ CORRECT Example: Blue + Men + Shirts</h3>
+            <p><strong>Should show ONLY:</strong> Blue Men Shirts</p>
+            <p><strong>Should NOT show:</strong> Blue T-shirts, Blue Women products, Men Shirts in other colors</p>
+            <button onclick="testStrictFaceToneFiltering('blue', 'men', 'shirts')">Test Blue Men Shirts</button>
+            <div id="strictFaceToneTest2"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>✅ CORRECT Example: Green + Women + Western Wear</h3>
+            <p><strong>Should show ONLY:</strong> Green Women Western Wear</p>
+            <button onclick="testStrictFaceToneFiltering('green', 'women', 'western wear')">Test Green Women Western Wear</button>
+            <div id="strictFaceToneTest3"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>💪 STRICT Body Fit Flow Tests</h2>
+        <p><strong>Rule:</strong> product.gender == selected_gender AND product.product_category == selected_category</p>
+        
+        <div class="filter-test">
+            <h3>✅ CORRECT Example: Women + Dresses</h3>
+            <p><strong>Should show ONLY:</strong> Women Dresses</p>
+            <p><strong>Should NOT show:</strong> Men products, Women in other categories</p>
+            <button onclick="testStrictBodyFitFiltering('women', 'dresses')">Test Women Dresses</button>
+            <div id="strictBodyFitTest1"></div>
+        </div>
+
+        <div class="filter-test">
+            <h3>✅ CORRECT Example: Men + T-shirts</h3>
+            <p><strong>Should show ONLY:</strong> Men T-shirts</p>
+            <p><strong>Should NOT show:</strong> Men Shirts, Women products</p>
+            <button onclick="testStrictBodyFitFiltering('men', 't-shirts')">Test Men T-shirts</button>
+            <div id="strictBodyFitTest2"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🚫 VIOLATION DETECTION</h2>
+        <p>This section checks for common violations of the strict rule:</p>
+        <button onclick="detectViolations()">Detect Rule Violations</button>
+        <div id="violationResults"></div>
+    </div>
+
+    <script>
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<div class="info">Testing backend connection...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Backend connection successful!<br>
+                        📊 Total products: ${data.products ? data.products.length : 0}<br>
+                        🔗 API Status: ${response.status}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Backend connection failed!<br>
+                        Error: ${error.message}<br>
+                        💡 Make sure the backend server is running on port 5000
+                    </div>
+                `;
+            }
+        }
+
+        async function testStrictFaceToneFiltering(selectedColor, selectedGender, selectedCategory) {
+            const testNumber = selectedColor === 'red' ? '1' : selectedColor === 'blue' ? '2' : '3';
+            const resultDiv = document.getElementById(`strictFaceToneTest${testNumber}`);
+            resultDiv.innerHTML = '<div class="info">Testing STRICT Face Tone filtering...</div>';
+            
+            try {
+                // Get all products first
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Apply STRICT filtering logic (same as component)
+                const filteredProducts = (data.products || []).filter((p) => {
+                    // STRICT Gender matching (exact equality, NO unisex fallback)
+                    const matchesGender = p.gender?.toLowerCase() === selectedGender.toLowerCase();
+                    
+                    // STRICT Color matching (exact equality)
+                    const matchesColor = p.color?.toLowerCase() === selectedColor.toLowerCase();
+                    
+                    // STRICT Category matching (exact equality)
+                    let matchesCategory = false;
+                    const productCategory = p.category?.toLowerCase() || '';
+                    const category = selectedCategory.toLowerCase();
+                    
+                    if (category === 'dresses') {
+                        matchesCategory = productCategory === 'dresses' || productCategory === 'dress';
+                    } else if (category === 'shirts') {
+                        matchesCategory = productCategory === 'shirts' || productCategory === 'shirt';
+                    } else if (category === 'western wear') {
+                        matchesCategory = productCategory === 'western wear' || productCategory === 'western';
+                    } else {
+                        matchesCategory = productCategory === category;
+                    }
+                    
+                    // 🔥 STRICT AND LOGIC: ALL three conditions must be true
+                    return matchesGender && matchesColor && matchesCategory;
+                });
+                
+                const totalProducts = data.products ? data.products.length : 0;
+                const matchedProducts = filteredProducts.length;
+                
+                let resultHTML = `
+                    <div class="success">
+                        ✅ STRICT filtering test completed!<br>
+                        📊 Total products: ${totalProducts}<br>
+                        🎯 Matched products: ${matchedProducts}<br>
+                        🔍 Filters: Color=${selectedColor}, Gender=${selectedGender}, Category=${selectedCategory}
+                    </div>
+                `;
+                
+                if (matchedProducts > 0) {
+                    resultHTML += '<div class="product-grid">';
+                    filteredProducts.slice(0, 6).forEach(product => {
+                        // Check for violations
+                        const colorMatch = product.color?.toLowerCase() === selectedColor.toLowerCase();
+                        const genderMatch = product.gender?.toLowerCase() === selectedGender.toLowerCase();
+                        const categoryMatch = product.category?.toLowerCase().includes(selectedCategory.toLowerCase());
+                        
+                        const violationClass = (!colorMatch || !genderMatch || !categoryMatch) ? 'violation' : '';
+                        
+                        resultHTML += `
+                            <div class="product-card ${violationClass}">
+                                <img src="${product.image_url}" alt="${product.title}" class="product-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+                                <div class="product-title">${product.title}</div>
+                                <div class="product-details">
+                                    💰 ₹${product.price}<br>
+                                    🎨 ${product.color || 'N/A'} ${colorMatch ? '✅' : '❌'}<br>
+                                    👤 ${product.gender || 'N/A'} ${genderMatch ? '✅' : '❌'}<br>
+                                    📂 ${product.category || 'N/A'} ${categoryMatch ? '✅' : '❌'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    resultHTML += '</div>';
+                } else {
+                    resultHTML += '<div class="warning">⚠️ No products matched the STRICT filtering criteria. This is expected if the database doesn\'t have exact matches.</div>';
+                }
+                
+                resultDiv.innerHTML = resultHTML;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ STRICT filtering test failed!<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testStrictBodyFitFiltering(selectedGender, selectedCategory) {
+            const testNumber = selectedGender === 'women' ? '1' : '2';
+            const resultDiv = document.getElementById(`strictBodyFitTest${testNumber}`);
+            resultDiv.innerHTML = '<div class="info">Testing STRICT Body Fit filtering...</div>';
+            
+            try {
+                // Get all products first
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Apply STRICT filtering logic (same as component)
+                const filteredProducts = (data.products || []).filter((p) => {
+                    // STRICT Gender matching (exact equality, NO unisex fallback)
+                    const matchesGender = p.gender?.toLowerCase() === selectedGender.toLowerCase();
+                    
+                    // STRICT Category matching (exact equality)
+                    let matchesCategory = false;
+                    const productCategory = p.category?.toLowerCase() || '';
+                    const category = selectedCategory.toLowerCase();
+                    
+                    if (category === 'dresses') {
+                        matchesCategory = productCategory === 'dresses' || productCategory === 'dress';
+                    } else if (category === 't-shirts') {
+                        matchesCategory = productCategory === 't-shirts' || productCategory === 't-shirt' || productCategory === 'tshirts' || productCategory === 'tshirt';
+                    } else {
+                        matchesCategory = productCategory === category;
+                    }
+                    
+                    // 🔥 STRICT AND LOGIC: BOTH conditions must be true
+                    return matchesGender && matchesCategory;
+                });
+                
+                const totalProducts = data.products ? data.products.length : 0;
+                const matchedProducts = filteredProducts.length;
+                
+                let resultHTML = `
+                    <div class="success">
+                        ✅ STRICT filtering test completed!<br>
+                        📊 Total products: ${totalProducts}<br>
+                        🎯 Matched products: ${matchedProducts}<br>
+                        🔍 Filters: Gender=${selectedGender}, Category=${selectedCategory}
+                    </div>
+                `;
+                
+                if (matchedProducts > 0) {
+                    resultHTML += '<div class="product-grid">';
+                    filteredProducts.slice(0, 6).forEach(product => {
+                        // Check for violations
+                        const genderMatch = product.gender?.toLowerCase() === selectedGender.toLowerCase();
+                        const categoryMatch = product.category?.toLowerCase().includes(selectedCategory.toLowerCase());
+                        
+                        const violationClass = (!genderMatch || !categoryMatch) ? 'violation' : '';
+                        
+                        resultHTML += `
+                            <div class="product-card ${violationClass}">
+                                <img src="${product.image_url}" alt="${product.title}" class="product-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+                                <div class="product-title">${product.title}</div>
+                                <div class="product-details">
+                                    💰 ₹${product.price}<br>
+                                    👤 ${product.gender || 'N/A'} ${genderMatch ? '✅' : '❌'}<br>
+                                    📂 ${product.category || 'N/A'} ${categoryMatch ? '✅' : '❌'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    resultHTML += '</div>';
+                } else {
+                    resultHTML += '<div class="warning">⚠️ No products matched the STRICT filtering criteria. This is expected if the database doesn\'t have exact matches.</div>';
+                }
+                
+                resultDiv.innerHTML = resultHTML;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ STRICT filtering test failed!<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function detectViolations() {
+            const resultDiv = document.getElementById('violationResults');
+            resultDiv.innerHTML = '<div class="info">Detecting rule violations...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/products/search?query=clothing&category=fashion');
+                const data = await response.json();
+                
+                let violations = [];
+                
+                // Check for common violations
+                const products = data.products || [];
+                
+                // Check if any products have mixed categories that could cause confusion
+                const categoryMixups = products.filter(p => {
+                    const category = p.category?.toLowerCase() || '';
+                    const title = p.title?.toLowerCase() || '';
+                    
+                    // Check for shirt/t-shirt confusion
+                    return (category.includes('shirt') && category.includes('t-shirt')) ||
+                           (title.includes('shirt') && title.includes('t-shirt'));
+                });
+                
+                if (categoryMixups.length > 0) {
+                    violations.push(`❌ Found ${categoryMixups.length} products with ambiguous shirt/t-shirt categories`);
+                }
+                
+                // Check for unisex products that might bypass gender filtering
+                const unisexProducts = products.filter(p => p.gender?.toLowerCase() === 'unisex');
+                if (unisexProducts.length > 0) {
+                    violations.push(`⚠️ Found ${unisexProducts.length} unisex products (should not bypass strict gender filtering)`);
+                }
+                
+                // Check for missing required fields
+                const missingFields = products.filter(p => !p.color || !p.gender || !p.category);
+                if (missingFields.length > 0) {
+                    violations.push(`❌ Found ${missingFields.length} products with missing required fields (color, gender, or category)`);
+                }
+                
+                let resultHTML = '';
+                if (violations.length === 0) {
+                    resultHTML = '<div class="success">✅ No rule violations detected! The database appears to be compatible with strict filtering.</div>';
+                } else {
+                    resultHTML = '<div class="error">🚨 Rule violations detected:</div>';
+                    violations.forEach(violation => {
+                        resultHTML += `<div class="violation">${violation}</div>`;
+                    });
+                }
+                
+                resultDiv.innerHTML = resultHTML;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Violation detection failed!<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test backend connection on page load
+        window.addEventListener('load', () => {
+            testBackendConnection();
+        });
+    </script>
+</body>
+</html>

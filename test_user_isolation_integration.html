@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Isolation Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .error {
+            border-left-color: #f44336;
+            background: rgba(244, 67, 54, 0.1);
+        }
+        .success {
+            border-left-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .logout-btn {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+        }
+        input, select {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        .user-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .data-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px;
+        }
+        .status.online {
+            background: #4CAF50;
+        }
+        .status.offline {
+            background: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 User Data Isolation Integration Test</h1>
+        <p>Test the complete user isolation system integration between frontend and backend.</p>
+        
+        <!-- Authentication Status -->
+        <div class="test-section">
+            <h3>🔑 Authentication Status</h3>
+            <div id="authStatus">Checking...</div>
+            <div class="user-info" id="userInfo"></div>
+            
+            <div style="margin-top: 15px;">
+                <button onclick="checkAuthStatus()">🔄 Refresh Status</button>
+                <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="test-section" id="loginSection">
+            <h3>🔐 Login Test</h3>
+            <div>
+                <input type="email" id="loginEmail" placeholder="Email" value="poojitha@example.com">
+                <input type="password" id="loginPassword" placeholder="Password" value="password123">
+                <button onclick="testLogin()">🔑 Login</button>
+            </div>
+            <div id="loginResult"></div>
+        </div>
+
+        <!-- Chat History Test -->
+        <div class="test-section">
+            <h3>💬 Chat History Test</h3>
+            <div>
+                <input type="text" id="chatMessage" placeholder="Test message" value="Hello, this is a test message">
+                <button onclick="saveChatMessage()">💾 Save Message</button>
+                <button onclick="loadChatHistory()">📜 Load History</button>
+            </div>
+            <div class="data-display" id="chatHistoryDisplay"></div>
+        </div>
+
+        <!-- Cart Test -->
+        <div class="test-section">
+            <h3>🛒 Cart Test</h3>
+            <div>
+                <input type="text" id="productId" placeholder="Product ID" value="1">
+                <input type="text" id="productName" placeholder="Product Name" value="Test Product">
+                <input type="number" id="productPrice" placeholder="Price" value="999">
+                <button onclick="addToCart()">➕ Add to Cart</button>
+                <button onclick="loadCart()">🛒 Load Cart</button>
+                <button onclick="clearCart()">🗑️ Clear Cart</button>
+            </div>
+            <div class="data-display" id="cartDisplay"></div>
+        </div>
+
+        <!-- Wishlist Test -->
+        <div class="test-section">
+            <h3>❤️ Wishlist Test</h3>
+            <div>
+                <input type="text" id="wishProductId" placeholder="Product ID" value="2">
+                <input type="text" id="wishProductName" placeholder="Product Name" value="Wishlist Product">
+                <input type="number" id="wishProductPrice" placeholder="Price" value="1499">
+                <button onclick="addToWishlist()">❤️ Add to Wishlist</button>
+                <button onclick="loadWishlist()">📋 Load Wishlist</button>
+            </div>
+            <div class="data-display" id="wishlistDisplay"></div>
+        </div>
+
+        <!-- Calendar Events Test -->
+        <div class="test-section">
+            <h3>📅 Calendar Events Test</h3>
+            <div>
+                <select id="eventGender">
+                    <option value="Women">Women</option>
+                    <option value="Men">Men</option>
+                </select>
+                <input type="date" id="eventDate" value="2026-01-15">
+                <input type="text" id="eventName" placeholder="Event Name" value="Birthday Party">
+                <button onclick="saveEvent()">📅 Save Event</button>
+                <button onclick="loadEvents()">📋 Load Events</button>
+            </div>
+            <div class="data-display" id="eventsDisplay"></div>
+        </div>
+
+        <!-- Search History Test -->
+        <div class="test-section">
+            <h3>🔍 Search History Test</h3>
+            <div>
+                <input type="text" id="searchQuery" placeholder="Search Query" value="blue shirts for women">
+                <button onclick="saveSearch()">🔍 Save Search</button>
+                <button onclick="loadSearchHistory()">📜 Load Search History</button>
+            </div>
+            <div class="data-display" id="searchHistoryDisplay"></div>
+        </div>
+
+        <!-- Data Isolation Verification -->
+        <div class="test-section">
+            <h3>🔒 Data Isolation Verification</h3>
+            <p>This section verifies that data is properly isolated per user.</p>
+            <div>
+                <button onclick="verifyIsolation()">🔍 Verify User Data Isolation</button>
+                <button onclick="simulateUserSwitch()">🔄 Simulate User Switch</button>
+            </div>
+            <div class="data-display" id="isolationResults"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        // Get JWT token from localStorage
+        function getAuthToken() {
+            return localStorage.getItem('authToken');
+        }
+        
+        // Create headers with authentication
+        function getAuthHeaders() {
+            const token = getAuthToken();
+            return {
+                'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` })
+            };
+        }
+
+        // Check authentication status
+        function checkAuthStatus() {
+            const token = getAuthToken();
+            const userInfo = document.getElementById('userInfo');
+            const authStatus = document.getElementById('authStatus');
+            const loginSection = document.getElementById('loginSection');
+            
+            if (token) {
+                try {
+                    // Decode JWT token (basic decode, not verification)
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    authStatus.innerHTML = '<span class="status online">✅ Logged In</span>';
+                    userInfo.innerHTML = `
+                        <strong>User:</strong> ${payload.email}<br>
+                        <strong>Token:</strong> ${token.substring(0, 20)}...<br>
+                        <strong>Expires:</strong> ${new Date(payload.exp * 1000).toLocaleString()}
+                    `;
+                    loginSection.style.display = 'none';
+                } catch (error) {
+                    authStatus.innerHTML = '<span class="status offline">❌ Invalid Token</span>';
+                    userInfo.innerHTML = 'Token is invalid or corrupted';
+                    loginSection.style.display = 'block';
+                }
+            } else {
+                authStatus.innerHTML = '<span class="status offline">❌ Not Logged In</span>';
+                userInfo.innerHTML = 'Please log in to test user isolation features';
+                loginSection.style.display = 'block';
+            }
+        }
+
+        // Test login
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const resultDiv = document.getElementById('loginResult');
+            
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.message === 'Login successful') {
+                    localStorage.setItem('authToken', result.token);
+                    resultDiv.innerHTML = '<div class="success">✅ Login successful!</div>';
+                    checkAuthStatus();
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Login failed: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Connection error: ${error.message}</div>`;
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('auth_token');
+            checkAuthStatus();
+        }
+
+        // Save chat message
+        async function saveChatMessage() {
+            const message = document.getElementById('chatMessage').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/chat-history`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        session_id: 'test_session',
+                        message_text: message,
+                        is_user_message: true,
+                        message_type: 'text',
+                        message_data: {}
+                    })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('chatHistoryDisplay').textContent = '✅ Message saved successfully';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('chatHistoryDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('chatHistoryDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Load chat history
+        async function loadChatHistory() {
+            try {
+                const response = await fetch(`${API_URL}/user/chat-history`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('chatHistoryDisplay').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    const error = await response.json();
+                    document.getElementById('chatHistoryDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('chatHistoryDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Add to cart
+        async function addToCart() {
+            const productId = document.getElementById('productId').value;
+            const productName = document.getElementById('productName').value;
+            const productPrice = document.getElementById('productPrice').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/cart`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        product_id: productId,
+                        product_name: productName,
+                        product_image: 'https://via.placeholder.com/150',
+                        product_price: parseFloat(productPrice),
+                        product_category: 'Test',
+                        quantity: 1
+                    })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('cartDisplay').textContent = '✅ Product added to cart';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('cartDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('cartDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Load cart
+        async function loadCart() {
+            try {
+                const response = await fetch(`${API_URL}/user/cart`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('cartDisplay').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    const error = await response.json();
+                    document.getElementById('cartDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('cartDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Clear cart
+        async function clearCart() {
+            try {
+                const response = await fetch(`${API_URL}/user/cart`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    document.getElementById('cartDisplay').textContent = '✅ Cart cleared successfully';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('cartDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('cartDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Add to wishlist
+        async function addToWishlist() {
+            const productId = document.getElementById('wishProductId').value;
+            const productName = document.getElementById('wishProductName').value;
+            const productPrice = document.getElementById('wishProductPrice').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/wishlist`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        product_id: productId,
+                        product_name: productName,
+                        product_image: 'https://via.placeholder.com/150',
+                        product_price: parseFloat(productPrice),
+                        product_category: 'Test'
+                    })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('wishlistDisplay').textContent = '✅ Product added to wishlist';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('wishlistDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('wishlistDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Load wishlist
+        async function loadWishlist() {
+            try {
+                const response = await fetch(`${API_URL}/user/wishlist`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('wishlistDisplay').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    const error = await response.json();
+                    document.getElementById('wishlistDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('wishlistDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Save event
+        async function saveEvent() {
+            const gender = document.getElementById('eventGender').value;
+            const date = document.getElementById('eventDate').value;
+            const name = document.getElementById('eventName').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/calendar-events`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        user_gender: gender,
+                        event_date: date,
+                        event_name: name,
+                        event_category: 'personal',
+                        outfit_suggestions: [],
+                        notes: 'Test event'
+                    })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('eventsDisplay').textContent = '✅ Event saved successfully';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('eventsDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('eventsDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Load events
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${API_URL}/user/calendar-events`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('eventsDisplay').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    const error = await response.json();
+                    document.getElementById('eventsDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('eventsDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Save search
+        async function saveSearch() {
+            const query = document.getElementById('searchQuery').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/user/search-history`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        query: query,
+                        filters: { category: 'clothing', gender: 'women' },
+                        results_count: 15
+                    })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('searchHistoryDisplay').textContent = '✅ Search saved successfully';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('searchHistoryDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('searchHistoryDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Load search history
+        async function loadSearchHistory() {
+            try {
+                const response = await fetch(`${API_URL}/user/search-history`, {
+                    headers: getAuthHeaders()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('searchHistoryDisplay').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    const error = await response.json();
+                    document.getElementById('searchHistoryDisplay').textContent = `❌ Error: ${error.error}`;
+                }
+            } catch (error) {
+                document.getElementById('searchHistoryDisplay').textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+
+        // Verify data isolation
+        async function verifyIsolation() {
+            const resultsDiv = document.getElementById('isolationResults');
+            resultsDiv.textContent = 'Running isolation verification tests...\n\n';
+            
+            try {
+                // Test 1: Check that all endpoints require authentication
+                const endpoints = [
+                    '/user/cart',
+                    '/user/wishlist', 
+                    '/user/orders',
+                    '/user/chat-history',
+                    '/user/calendar-events',
+                    '/user/search-history'
+                ];
+                
+                let results = 'ISOLATION VERIFICATION RESULTS:\n\n';
+                
+                for (const endpoint of endpoints) {
+                    try {
+                        // Test without token
+                        const response = await fetch(`${API_URL}${endpoint}`, {
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        
+                        if (response.status === 401) {
+                            results += `✅ ${endpoint}: Properly protected (401 Unauthorized)\n`;
+                        } else {
+                            results += `❌ ${endpoint}: NOT PROTECTED! Status: ${response.status}\n`;
+                        }
+                    } catch (error) {
+                        results += `⚠️ ${endpoint}: Connection error\n`;
+                    }
+                }
+                
+                // Test 2: Verify JWT token validation
+                results += '\nJWT TOKEN VALIDATION:\n';
+                try {
+                    const fakeToken = 'Bearer fake.token.here';
+                    const response = await fetch(`${API_URL}/user/cart`, {
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': fakeToken
+                        }
+                    });
+                    
+                    if (response.status === 401) {
+                        results += '✅ Invalid JWT tokens are rejected\n';
+                    } else {
+                        results += '❌ Invalid JWT tokens are accepted!\n';
+                    }
+                } catch (error) {
+                    results += '⚠️ JWT validation test failed\n';
+                }
+                
+                // Test 3: Check current user data access
+                if (getAuthToken()) {
+                    results += '\nUSER DATA ACCESS:\n';
+                    const token = getAuthToken();
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    results += `✅ Current user: ${payload.email}\n`;
+                    results += `✅ Token expires: ${new Date(payload.exp * 1000).toLocaleString()}\n`;
+                }
+                
+                resultsDiv.textContent = results;
+                
+            } catch (error) {
+                resultsDiv.textContent = `❌ Verification failed: ${error.message}`;
+            }
+        }
+
+        // Simulate user switch
+        function simulateUserSwitch() {
+            const resultsDiv = document.getElementById('isolationResults');
+            
+            resultsDiv.textContent = `
+USER SWITCH SIMULATION:
+
+To properly test user data isolation:
+
+1. 🔑 Login as User A (e.g., poojitha@example.com)
+2. 🛒 Add items to cart, wishlist, save chat messages
+3. 🚪 Logout completely
+4. 🔑 Login as User B (e.g., nithya@example.com) 
+5. 🔍 Check that User A's data is NOT visible
+6. 🛒 Add different items for User B
+7. 🔄 Switch back to User A
+8. ✅ Verify User A sees only their own data
+
+EXPECTED RESULT:
+- Each user sees only their own cart, wishlist, chat history, etc.
+- No data leakage between users
+- Complete isolation per user email
+
+CURRENT USER: ${getAuthToken() ? 'Logged in' : 'Not logged in'}
+
+Use the login form above to switch between test users:
+- poojitha@example.com / password123
+- nithya@example.com / password123  
+- sunitha@example.com / password123
+            `;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
+    </script>
+</body>
+</html>

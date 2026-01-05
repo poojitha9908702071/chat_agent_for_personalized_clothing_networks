@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Products API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #059669; }
+        .error { color: #dc2626; }
+        .info { color: #0369a1; }
+        pre {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .product-sample {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .product-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .product-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Products API</h1>
+    
+    <div class="debug-section">
+        <h2>Backend Connection Status</h2>
+        <div id="connection-status">Testing...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>API Endpoints Test</h2>
+        <div id="api-tests">Running tests...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Sample Products</h2>
+        <div id="sample-products">Loading...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Raw API Response</h2>
+        <pre id="raw-response">Loading...</pre>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        async function debugAPI() {
+            const connectionStatus = document.getElementById('connection-status');
+            const apiTests = document.getElementById('api-tests');
+            const sampleProducts = document.getElementById('sample-products');
+            const rawResponse = document.getElementById('raw-response');
+            
+            try {
+                // Test 1: Backend health
+                connectionStatus.innerHTML = '<span class="info">Testing backend connection...</span>';
+                
+                const healthResponse = await fetch(`${API_URL}/cache/count`);
+                const healthData = await healthResponse.json();
+                
+                connectionStatus.innerHTML = `
+                    <span class="success">✅ Backend Connected</span><br>
+                    <strong>Products in database:</strong> ${healthData.cached_products}<br>
+                    <strong>Backend URL:</strong> ${API_URL}
+                `;
+                
+                // Test 2: API endpoints
+                apiTests.innerHTML = '<span class="info">Testing API endpoints...</span>';
+                
+                const endpoints = [
+                    { name: 'Search Products', url: `${API_URL}/products/search?query=clothing&category=fashion` },
+                    { name: 'Category Products', url: `${API_URL}/products/category/fashion` },
+                    { name: 'Women Products', url: `${API_URL}/products/category/women?gender=women` }
+                ];
+                
+                let testResults = '';
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(endpoint.url);
+                        const data = await response.json();
+                        const count = data.products ? data.products.length : 0;
+                        testResults += `<span class="success">✅ ${endpoint.name}: ${count} products</span><br>`;
+                    } catch (error) {
+                        testResults += `<span class="error">❌ ${endpoint.name}: ${error.message}</span><br>`;
+                    }
+                }
+                
+                apiTests.innerHTML = testResults;
+                
+                // Test 3: Get sample products
+                sampleProducts.innerHTML = '<span class="info">Loading sample products...</span>';
+                
+                const productsResponse = await fetch(`${API_URL}/products/search?query=clothing&category=fashion`);
+                const productsData = await productsResponse.json();
+                const products = productsData.products || [];
+                
+                rawResponse.textContent = JSON.stringify(productsData, null, 2);
+                
+                if (products.length > 0) {
+                    const sampleGrid = document.createElement('div');
+                    sampleGrid.className = 'product-sample';
+                    
+                    products.slice(0, 6).forEach(product => {
+                        const card = document.createElement('div');
+                        card.className = 'product-card';
+                        
+                        card.innerHTML = `
+                            <img src="${product.image_url}" alt="${product.title}" class="product-image" 
+                                 onerror="this.src='https://via.placeholder.com/250x120/ec4899/ffffff?text=No+Image'">
+                            <div><strong>ID:</strong> ${product.product_id}</div>
+                            <div><strong>Title:</strong> ${product.title}</div>
+                            <div><strong>Price:</strong> ₹${product.price}</div>
+                            <div><strong>Category:</strong> ${product.category}</div>
+                            <div><strong>Gender:</strong> ${product.gender}</div>
+                            <div><strong>Source:</strong> ${product.source}</div>
+                        `;
+                        
+                        sampleGrid.appendChild(card);
+                    });
+                    
+                    sampleProducts.innerHTML = `
+                        <span class="success">✅ Found ${products.length} products</span>
+                        ${sampleGrid.outerHTML}
+                    `;
+                } else {
+                    sampleProducts.innerHTML = '<span class="error">❌ No products found</span>';
+                }
+                
+            } catch (error) {
+                console.error('Debug failed:', error);
+                connectionStatus.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+        
+        // Start debugging
+        debugAPI();
+        
+        // Auto-refresh every 10 seconds
+        setInterval(debugAPI, 10000);
+    </script>
+</body>
+</html>

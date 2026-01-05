@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Visual Enhancements Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .enhancement-rule {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .demo-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .button-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .color-button {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 500;
+            font-size: 14px;
+            border: 2px solid;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: scale(1);
+        }
+        .color-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .gender-button {
+            background: linear-gradient(to right, #ec4899, #db2777);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gender-button:hover {
+            background: linear-gradient(to right, #db2777, #be185d);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .skin-tone-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .skin-tone-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .skin-tone-option:hover {
+            background-color: #f9fafb;
+        }
+        .skin-tone-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 3px solid #d1d5db;
+            transition: border-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .skin-tone-option:hover .skin-tone-circle {
+            border-color: #ec4899;
+        }
+        .skin-tone-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .before {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+        .after {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+        .old-button {
+            background: #ec4899;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Visual Enhancements Test</h1>
+    
+    <div class="enhancement-rule">
+        🎯 VISUAL ENHANCEMENTS IMPLEMENTED:<br>
+        1. Color buttons filled with actual colors<br>
+        2. Gender options with face emojis (👨 Men, 👩 Women)
+    </div>
+
+    <div class="test-section">
+        <h2>🌈 Color Button Enhancements</h2>
+        <p>Color buttons now display the actual colors instead of just text on pink background.</p>
+        
+        <div class="demo-section">
+            <h3>✅ NEW: Color-Filled Buttons</h3>
+            <div class="button-demo">
+                <button class="color-button" style="background-color: #ef4444; color: white; border-color: #dc2626;">Red</button>
+                <button class="color-button" style="background-color: #ec4899; color: white; border-color: #db2777;">Pink</button>
+                <button class="color-button" style="background-color: #1f2937; color: white; border-color: #111827;">Black</button>
+                <button class="color-button" style="background-color: #ffffff; color: #1f2937; border-color: #d1d5db;">White</button>
+                <button class="color-button" style="background-color: #10b981; color: white; border-color: #059669;">Green</button>
+                <button class="color-button" style="background-color: #6b7280; color: white; border-color: #4b5563;">Grey</button>
+                <button class="color-button" style="background-color: #3b82f6; color: white; border-color: #1d4ed8;">Blue</button>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="before">
+                <h4>❌ BEFORE: Generic Pink Buttons</h4>
+                <button class="old-button">Red</button>
+                <button class="old-button">Pink</button>
+                <button class="old-button">Black</button>
+                <button class="old-button">White</button>
+                <p><small>All colors looked the same (pink)</small></p>
+            </div>
+            <div class="after">
+                <h4>✅ AFTER: Color-Filled Buttons</h4>
+                <button class="color-button" style="background-color: #ef4444; color: white; border-color: #dc2626;">Red</button>
+                <button class="color-button" style="background-color: #1f2937; color: white; border-color: #111827;">Black</button>
+                <button class="color-button" style="background-color: #ffffff; color: #1f2937; border-color: #d1d5db;">White</button>
+                <p><small>Each color shows its actual appearance</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>👤 Gender Button Enhancements</h2>
+        <p>Gender options now include face emojis for better visual identification.</p>
+        
+        <div class="demo-section">
+            <h3>✅ NEW: Gender Buttons with Face Emojis</h3>
+            <div class="button-demo">
+                <button class="gender-button">
+                    <span style="font-size: 18px;">👨</span>
+                    <span>Men</span>
+                </button>
+                <button class="gender-button">
+                    <span style="font-size: 18px;">👩</span>
+                    <span>Women</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="before">
+                <h4>❌ BEFORE: Text Only</h4>
+                <button class="old-button">Men</button>
+                <button class="old-button">Women</button>
+                <p><small>Plain text without visual cues</small></p>
+            </div>
+            <div class="after">
+                <h4>✅ AFTER: With Face Emojis</h4>
+                <button class="gender-button">
+                    <span style="font-size: 18px;">👨</span>
+                    <span>Men</span>
+                </button>
+                <button class="gender-button">
+                    <span style="font-size: 18px;">👩</span>
+                    <span>Women</span>
+                </button>
+                <p><small>Clear visual identification with emojis</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎨 Face Tone Circles (Already Implemented)</h2>
+        <p>Face tone options display as colored circles representing different skin tones.</p>
+        
+        <div class="demo-section">
+            <h3>✅ Face Tone Color Circles</h3>
+            <div class="skin-tone-demo">
+                <div class="skin-tone-option">
+                    <div class="skin-tone-circle" style="background-color: #fdbcb4;"></div>
+                    <span class="skin-tone-label">Fair</span>
+                </div>
+                <div class="skin-tone-option">
+                    <div class="skin-tone-circle" style="background-color: #deb887;"></div>
+                    <span class="skin-tone-label">Wheatish</span>
+                </div>
+                <div class="skin-tone-option">
+                    <div class="skin-tone-circle" style="background-color: #cd853f;"></div>
+                    <span class="skin-tone-label">Dusky</span>
+                </div>
+                <div class="skin-tone-option">
+                    <div class="skin-tone-circle" style="background-color: #8b4513;"></div>
+                    <span class="skin-tone-label">Dark</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Implementation Details</h2>
+        
+        <div class="demo-section">
+            <h3>📝 Code Changes Made</h3>
+            <ul>
+                <li><strong>Color Detection:</strong> Added <code>isColorSelection</code> check for color names</li>
+                <li><strong>Gender Detection:</strong> Added <code>isGenderSelection</code> check for Men/Women</li>
+                <li><strong>Color Mapping:</strong> Created <code>colorStyles</code> object with actual color values</li>
+                <li><strong>Gender Emojis:</strong> Added <code>genderEmojis</code> mapping (👨 Men, 👩 Women)</li>
+                <li><strong>Hover Effects:</strong> Added scale transform and shadow effects</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Detection Logic</h3>
+            <pre style="background: #f1f5f9; padding: 15px; border-radius: 8px; font-size: 12px; overflow-x: auto;">
+// Gender Selection Detection
+const isGenderSelection = ['Men', 'Women'].includes(option);
+
+// Color Selection Detection  
+const isColorSelection = ['Red', 'Pink', 'Black', 'White', 'Green', 'Grey', 'Blue'].includes(option);
+
+// Face Tone Selection (already implemented)
+const isFaceToneSelection = ['Fair', 'Wheatish', 'Dusky', 'Dark'].includes(option);
+            </pre>
+        </div>
+
+        <div class="demo-section">
+            <h3>🌈 Color Values Used</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                <div style="background: #ef4444; color: white; padding: 8px; border-radius: 4px; text-align: center;">Red: #ef4444</div>
+                <div style="background: #ec4899; color: white; padding: 8px; border-radius: 4px; text-align: center;">Pink: #ec4899</div>
+                <div style="background: #1f2937; color: white; padding: 8px; border-radius: 4px; text-align: center;">Black: #1f2937</div>
+                <div style="background: #ffffff; color: #1f2937; padding: 8px; border-radius: 4px; text-align: center; border: 1px solid #ccc;">White: #ffffff</div>
+                <div style="background: #10b981; color: white; padding: 8px; border-radius: 4px; text-align: center;">Green: #10b981</div>
+                <div style="background: #6b7280; color: white; padding: 8px; border-radius: 4px; text-align: center;">Grey: #6b7280</div>
+                <div style="background: #3b82f6; color: white; padding: 8px; border-radius: 4px; text-align: center;">Blue: #3b82f6</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Benefits of Visual Enhancements</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                <h4 style="color: #0c4a6e; margin-top: 0;">🎨 Better Color Recognition</h4>
+                <p style="color: #075985; font-size: 14px;">Users can instantly see what each color looks like instead of guessing from text labels.</p>
+            </div>
+            
+            <div style="background: #fef3c7; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                <h4 style="color: #92400e; margin-top: 0;">👤 Clearer Gender Options</h4>
+                <p style="color: #b45309; font-size: 14px;">Face emojis provide immediate visual context for gender selection.</p>
+            </div>
+            
+            <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #22c55e;">
+                <h4 style="color: #15803d; margin-top: 0;">🚀 Improved UX</h4>
+                <p style="color: #166534; font-size: 14px;">More intuitive and visually appealing interface increases user engagement.</p>
+            </div>
+            
+            <div style="background: #fdf2f8; padding: 15px; border-radius: 8px; border-left: 4px solid #ec4899;">
+                <h4 style="color: #be185d; margin-top: 0;">🎯 Consistent Design</h4>
+                <p style="color: #9d174d; font-size: 14px;">Visual enhancements maintain the pink theme while adding functional improvements.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add click handlers for demo buttons
+        document.querySelectorAll('.color-button, .gender-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const buttonText = this.textContent.trim();
+                alert(`You clicked: ${buttonText}\n\nThis demonstrates the enhanced visual feedback!`);
+            });
+        });
+
+        // Add click handlers for skin tone options
+        document.querySelectorAll('.skin-tone-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const label = this.querySelector('.skin-tone-label').textContent;
+                alert(`You selected: ${label} skin tone\n\nThe colored circle helps visualize the skin tone!`);
+            });
+        });
+
+        console.log('🎨 Visual Enhancements Test Page Loaded');
+        console.log('✅ Color buttons now show actual colors');
+        console.log('✅ Gender buttons now show face emojis');
+        console.log('✅ Face tone circles already implemented');
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test React API Calls</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce7f3, #f3e8ff);
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .success { background: #d1fae5; }
+        .error { background: #fee2e2; }
+        .loading { background: #dbeafe; }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .product-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fafafa;
+        }
+        .product-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        button {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #db2777;
+        }
+        pre {
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test React API Calls</h1>
+        <p>This test mimics exactly what the React app should be doing</p>
+        
+        <div class="test-section">
+            <h3>Test Controls</h3>
+            <button onclick="testSearchProducts()">Test searchProducts("clothing", "fashion")</button>
+            <button onclick="testCategoryProducts()">Test getProductsByCategory("fashion")</button>
+            <button onclick="testWomenProducts()">Test getProductsByCategory("women", "women")</button>
+            <button onclick="clearResults()">Clear Results</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        // Exact copy of the React app's API functions
+        async function searchProducts(query, category = 'fashion') {
+            try {
+                const response = await fetch(`${API_URL}/products/search?query=${encodeURIComponent(query)}&category=${category}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+                const data = await response.json();
+                return data.products || [];
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                return [];
+            }
+        }
+        
+        async function getProductsByCategory(category, gender, limit = 20) {
+            try {
+                let url = `${API_URL}/products/category/${encodeURIComponent(category)}?limit=${limit}`;
+                if (gender) {
+                    url += `&gender=${encodeURIComponent(gender)}`;
+                }
+                
+                console.log('Fetching products from URL:', url);
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                console.log('API Response:', data);
+                return data.products || [];
+            } catch (error) {
+                console.error('Error fetching products by category:', error);
+                return [];
+            }
+        }
+        
+        function displayResults(title, products, error = null) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `<div class="test-section ${error ? 'error' : 'success'}">`;
+            html += `<h3>${title}</h3>`;
+            
+            if (error) {
+                html += `<p style="color: red;">❌ Error: ${error}</p>`;
+            } else {
+                html += `<p style="color: green;">✅ Success: Found ${products.length} products</p>`;
+                
+                if (products.length > 0) {
+                    // Show first few products
+                    html += '<div class="product-grid">';
+                    products.slice(0, 6).forEach(product => {
+                        html += `
+                            <div class="product-card">
+                                <img src="${product.image_url}" alt="${product.title}" class="product-image" 
+                                     onerror="this.src='https://via.placeholder.com/200x120/ec4899/ffffff?text=No+Image'">
+                                <div><strong>${product.title}</strong></div>
+                                <div>₹${Math.floor(product.price)}</div>
+                                <div>${product.category} • ${product.gender}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    
+                    // Show raw data sample
+                    html += '<details><summary>Raw Data Sample</summary>';
+                    html += `<pre>${JSON.stringify(products.slice(0, 2), null, 2)}</pre>`;
+                    html += '</details>';
+                }
+            }
+            
+            html += '</div>';
+            resultsDiv.innerHTML = html + resultsDiv.innerHTML;
+        }
+        
+        async function testSearchProducts() {
+            displayResults('Testing searchProducts...', [], null);
+            try {
+                const products = await searchProducts("clothing", "fashion");
+                displayResults('searchProducts("clothing", "fashion")', products);
+            } catch (error) {
+                displayResults('searchProducts("clothing", "fashion")', [], error.message);
+            }
+        }
+        
+        async function testCategoryProducts() {
+            displayResults('Testing getProductsByCategory...', [], null);
+            try {
+                const products = await getProductsByCategory("fashion", undefined, 500);
+                displayResults('getProductsByCategory("fashion")', products);
+            } catch (error) {
+                displayResults('getProductsByCategory("fashion")', [], error.message);
+            }
+        }
+        
+        async function testWomenProducts() {
+            displayResults('Testing getProductsByCategory for women...', [], null);
+            try {
+                const products = await getProductsByCategory("women", "women", 500);
+                displayResults('getProductsByCategory("women", "women")', products);
+            } catch (error) {
+                displayResults('getProductsByCategory("women", "women")', [], error.message);
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Auto-run the main test
+        setTimeout(testSearchProducts, 1000);
+    </script>
+</body>
+</html>

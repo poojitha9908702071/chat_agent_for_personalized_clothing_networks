@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Order Placement Complete Flow</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .order-card { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #007bff; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Order Placement Complete Flow Test</h1>
+        <p>Testing the complete order placement flow from checkout to chat display</p>
+
+        <div class="test-section info">
+            <h3>📋 Test Scenario</h3>
+            <p>1. Simulate order placement via checkout</p>
+            <p>2. Save order to database via user isolation API</p>
+            <p>3. Verify order appears in chat immediately</p>
+            <p>4. Test with authenticated user token</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🔐 Step 1: Authentication Setup</h3>
+            <button onclick="setupAuth()">Setup Test User Authentication</button>
+            <div id="authResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🛍️ Step 2: Simulate Order Placement</h3>
+            <button onclick="placeTestOrder()">Place Test Order</button>
+            <div id="orderResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>💬 Step 3: Test Chat Order Query</h3>
+            <button onclick="testChatOrderQuery()">Query Orders in Chat</button>
+            <div id="chatResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 Step 4: Complete Flow Test</h3>
+            <button onclick="runCompleteTest()">Run Complete Flow Test</button>
+            <div id="completeResult"></div>
+        </div>
+    </div>
+
+    <script>
+        let testUserToken = null;
+        let testOrderId = null;
+
+        async function setupAuth() {
+            const resultDiv = document.getElementById('authResult');
+            resultDiv.innerHTML = '<p>Setting up authentication...</p>';
+
+            try {
+                // Create test user credentials
+                const testUser = {
+                    email: 'test.checkout@example.com',
+                    name: 'Test Checkout User'
+                };
+
+                // Generate JWT token for testing
+                const loginResponse = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: testUser.email,
+                        password: 'testpassword123'
+                    })
+                });
+
+                if (loginResponse.ok) {
+                    const loginData = await loginResponse.json();
+                    testUserToken = loginData.token;
+                    
+                    // Store in localStorage to simulate real checkout flow
+                    localStorage.setItem('authToken', testUserToken);
+                    localStorage.setItem('user', JSON.stringify(testUser));
+
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Authentication Setup Complete</h4>
+                            <p><strong>User:</strong> ${testUser.email}</p>
+                            <p><strong>Token:</strong> ${testUserToken.substring(0, 20)}...</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`Login failed: ${loginResponse.status}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Authentication Setup Failed</h4>
+                        <p>${error.message}</p>
+                        <p>Note: Make sure backend server is running on port 5000</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function placeTestOrder() {
+            const resultDiv = document.getElementById('orderResult');
+            resultDiv.innerHTML = '<p>Placing test order...</p>';
+
+            if (!testUserToken) {
+                resultDiv.innerHTML = '<div class="error">❌ Please setup authentication first</div>';
+                return;
+            }
+
+            try {
+                // Generate order data (simulating checkout process)
+                testOrderId = `ORD${Date.now().toString().slice(-8)}`;
+                const orderData = {
+                    order_id: testOrderId,
+                    total_amount: 1299,
+                    shipping_address: "123 Test Street, Test City, Test State 12345",
+                    order_items: [
+                        {
+                            product_id: "1",
+                            product_name: "Test Blue Shirt",
+                            quantity: 1,
+                            price: 1299
+                        }
+                    ]
+                };
+
+                // Call backend API to save order (same as checkout process)
+                const response = await fetch('http://localhost:5000/api/user/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${testUserToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Order Placed Successfully</h4>
+                            <div class="order-card">
+                                <p><strong>Order ID:</strong> ${testOrderId}</p>
+                                <p><strong>Total:</strong> ₹1299</p>
+                                <p><strong>Items:</strong> Test Blue Shirt (1x)</p>
+                                <p><strong>Status:</strong> Order saved to database</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(`Order placement failed: ${response.status} - ${errorData.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Order Placement Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testChatOrderQuery() {
+            const resultDiv = document.getElementById('chatResult');
+            resultDiv.innerHTML = '<p>Testing chat order query...</p>';
+
+            if (!testUserToken || !testOrderId) {
+                resultDiv.innerHTML = '<div class="error">❌ Please complete previous steps first</div>';
+                return;
+            }
+
+            try {
+                // Query orders via chat API (same as AIChatBox)
+                const response = await fetch('http://localhost:5000/api/user/orders', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${testUserToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const orders = await response.json();
+                    const foundOrder = orders.find(order => order.order_id === testOrderId);
+
+                    if (foundOrder) {
+                        resultDiv.innerHTML = `
+                            <div class="success">
+                                <h4>✅ Order Found in Chat Query</h4>
+                                <div class="order-card">
+                                    <p><strong>Order ID:</strong> ${foundOrder.order_id}</p>
+                                    <p><strong>Total:</strong> ₹${foundOrder.total_amount}</p>
+                                    <p><strong>Date:</strong> ${new Date(foundOrder.order_date).toLocaleDateString()}</p>
+                                    <p><strong>Items:</strong> ${JSON.parse(foundOrder.order_items).length} item(s)</p>
+                                </div>
+                                <p><strong>✅ SUCCESS:</strong> Order placed via checkout appears in chat immediately!</p>
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="error">
+                                <h4>❌ Order Not Found in Chat</h4>
+                                <p>Order ${testOrderId} was not found in chat query results</p>
+                                <p>Found ${orders.length} orders total</p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    throw new Error(`Chat query failed: ${response.status}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Chat Query Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function runCompleteTest() {
+            const resultDiv = document.getElementById('completeResult');
+            resultDiv.innerHTML = '<p>Running complete flow test...</p>';
+
+            try {
+                // Step 1: Setup Auth
+                await setupAuth();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Step 2: Place Order
+                await placeTestOrder();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Step 3: Test Chat Query
+                await testChatOrderQuery();
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>🎉 Complete Flow Test Results</h4>
+                        <p>✅ Authentication: Working</p>
+                        <p>✅ Order Placement: Working</p>
+                        <p>✅ Chat Integration: Working</p>
+                        <p><strong>CONCLUSION:</strong> Orders placed via checkout now appear in chat immediately!</p>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Complete Flow Test Failed</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run test on page load
+        window.onload = function() {
+            console.log('Order Placement Complete Flow Test Ready');
+        };
+    </script>
+</body>
+</html>

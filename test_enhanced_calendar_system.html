@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Enhanced Calendar Event System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .calendar-rule {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .flow-demo {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .step {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .logic-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .logic-table th, .logic-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .logic-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .women-row {
+            background-color: #fce4ec;
+        }
+        .men-row {
+            background-color: #e3f2fd;
+        }
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .event-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .feature-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .before {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+        .after {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+        .demo-button {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .demo-button:hover {
+            background: #db2777;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <h1>📅 Enhanced Calendar Event System</h1>
+    
+    <div class="calendar-rule">
+        🎯 COMPREHENSIVE CALENDAR SYSTEM WITH INTELLIGENT OUTFIT SUGGESTIONS<br>
+        📅 Gender → Date → Event → Smart Category Recommendations → Product Display
+    </div>
+
+    <div class="test-section">
+        <h2>🔄 Complete Flow Overview</h2>
+        
+        <div class="step">
+            <strong>STEP 1:</strong> User clicks Calendar Icon (📅) near message typing bar
+        </div>
+        
+        <div class="step">
+            <strong>STEP 2:</strong> First ask Gender → Men, Women
+        </div>
+        
+        <div class="step">
+            <strong>STEP 3:</strong> Open Calendar popup for date selection
+        </div>
+        
+        <div class="step">
+            <strong>STEP 4:</strong> Show comprehensive event options + custom input
+        </div>
+        
+        <div class="step">
+            <strong>STEP 5:</strong> Save event with user_email → gender → date → event
+        </div>
+        
+        <div class="step">
+            <strong>STEP 6:</strong> Generate intelligent outfit suggestions based on gender + event
+        </div>
+        
+        <div class="step">
+            <strong>STEP 7:</strong> Show reminder system with blinking chat icon when event approaches
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎉 Comprehensive Event Options</h2>
+        <p>Enhanced event list covering all major occasions:</p>
+        
+        <div class="event-grid">
+            <div class="event-card">Job Interview</div>
+            <div class="event-card">Wedding</div>
+            <div class="event-card">Birthday Party</div>
+            <div class="event-card">Festival</div>
+            <div class="event-card">Party</div>
+            <div class="event-card">Travel</div>
+            <div class="event-card">Conference</div>
+            <div class="event-card">Seminar</div>
+            <div class="event-card">Office Event</div>
+            <div class="event-card">College</div>
+            <div class="event-card">Meeting</div>
+            <div class="event-card">Engagement</div>
+            <div class="event-card">Reception</div>
+            <div class="event-card">Night Out</div>
+            <div class="event-card">Celebration</div>
+            <div class="event-card">Daily Wear</div>
+            <div class="event-card">Ugadi</div>
+            <div class="event-card">Sankranthi</div>
+            <div class="event-card">Diwali</div>
+            <div class="event-card">Dasara</div>
+            <div class="event-card">Bathukamma</div>
+            <div class="event-card">Family Function</div>
+            <div class="event-card">Temple</div>
+            <div class="event-card">Photoshoot</div>
+            <div class="event-card">Others (Custom)</div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>👩‍🦰 WOMEN'S OUTFIT LOGIC</h2>
+        <p><strong>Available Categories:</strong> Western Wear, Dresses, Ethnic Wear, Tops & Co-Ord Sets, Bottom Wear</p>
+        
+        <table class="logic-table">
+            <tr>
+                <th>Event Type</th>
+                <th>Recommended Categories</th>
+                <th>Style</th>
+            </tr>
+            <tr class="women-row">
+                <td>Job Interview / Office / Meeting / Conference / Seminar</td>
+                <td>Western Wear, Tops & Co-Ord Sets, Bottom Wear, Dresses</td>
+                <td>Formal</td>
+            </tr>
+            <tr class="women-row">
+                <td>Wedding / Engagement / Reception</td>
+                <td>Ethnic Wear, Dresses</td>
+                <td>Traditional/Formal</td>
+            </tr>
+            <tr class="women-row">
+                <td>Birthday Party / Night Out / Celebration</td>
+                <td>Western Wear, Dresses, Tops & Co-Ord Sets, Bottom Wear</td>
+                <td>Party</td>
+            </tr>
+            <tr class="women-row">
+                <td>College / Daily Wear</td>
+                <td>Tops & Co-Ord Sets, Western Wear, Bottom Wear, Dresses</td>
+                <td>Casual</td>
+            </tr>
+            <tr class="women-row">
+                <td>Telugu Festivals (Ugadi, Sankranthi, Diwali, etc.)</td>
+                <td>Ethnic Wear, Traditional Dresses</td>
+                <td>Traditional</td>
+            </tr>
+            <tr class="women-row">
+                <td>Family Function / Temple</td>
+                <td>Ethnic Wear, Simple Dresses</td>
+                <td>Traditional</td>
+            </tr>
+            <tr class="women-row">
+                <td>Travel / Trip / Photoshoot</td>
+                <td>Western Wear, Dresses, Tops & Co-Ord Sets, Bottom Wear</td>
+                <td>Trendy</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-section">
+        <h2>👨 MEN'S OUTFIT LOGIC</h2>
+        <p><strong>Available Categories:</strong> Shirts, T-Shirts, Bottom Wear</p>
+        
+        <table class="logic-table">
+            <tr>
+                <th>Event Type</th>
+                <th>Recommended Categories</th>
+                <th>Style</th>
+            </tr>
+            <tr class="men-row">
+                <td>Job Interview / Office / Meeting / Conference / Seminar</td>
+                <td>Shirts, Bottom Wear</td>
+                <td>Formal</td>
+            </tr>
+            <tr class="men-row">
+                <td>Wedding / Engagement / Reception</td>
+                <td>Premium Shirts, Formal Bottom Wear</td>
+                <td>Premium/Formal</td>
+            </tr>
+            <tr class="men-row">
+                <td>Party / Celebration / Night Out</td>
+                <td>Stylish Shirts, T-Shirts, Bottom Wear</td>
+                <td>Stylish</td>
+            </tr>
+            <tr class="men-row">
+                <td>College / Daily Wear</td>
+                <td>T-Shirts, Casual Shirts, Bottom Wear</td>
+                <td>Casual</td>
+            </tr>
+            <tr class="men-row">
+                <td>Telugu Festivals</td>
+                <td>Festive Shirts, Bottom Wear</td>
+                <td>Festive</td>
+            </tr>
+            <tr class="men-row">
+                <td>Travel / Trip / Photoshoot</td>
+                <td>Printed Shirts, Stylish T-Shirts, Trendy Bottom Wear</td>
+                <td>Trendy</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-section">
+        <h2>🔔 Reminder System Features</h2>
+        
+        <div class="flow-demo">
+            <h3>📱 Chat Icon Blinking</h3>
+            <ul>
+                <li>When event date is near, chat icon blinks/highlights</li>
+                <li>Visual indicator: Orange to red gradient with pulse animation</li>
+                <li>Tooltip shows: "You have upcoming events!"</li>
+            </ul>
+        </div>
+
+        <div class="flow-demo">
+            <h3>💬 Automatic Chat Reminder</h3>
+            <ul>
+                <li>When user opens chat near event date</li>
+                <li>Shows: "Your event [event name] on [date] is coming closer"</li>
+                <li>Displays recommended categories for the event</li>
+                <li>Shows actual product suggestions with clickable cards</li>
+            </ul>
+        </div>
+
+        <div class="flow-demo">
+            <h3>🔄 Login Reminder</h3>
+            <ul>
+                <li>Whenever user logs in near event date</li>
+                <li>Automatically reminds inside chat</li>
+                <li>Shows outfit suggestions immediately</li>
+                <li>Persistent until event date passes</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>💾 Storage System</h2>
+        
+        <div class="flow-demo">
+            <h3>📊 Data Structure</h3>
+            <pre style="background: #f1f5f9; padding: 15px; border-radius: 8px; font-size: 12px;">
+{
+  "user_email": "user@example.com",
+  "gender": "Women",
+  "date": "2024-12-25",
+  "event": "Wedding",
+  "categories": ["Ethnic Wear", "Dresses"],
+  "style": "traditional/formal",
+  "createdAt": "2024-01-04T10:30:00Z",
+  "userId": "user123"
+}
+            </pre>
+        </div>
+
+        <div class="flow-demo">
+            <h3>🔧 Storage Rules</h3>
+            <ul>
+                <li><strong>User-based:</strong> Save events using user login email</li>
+                <li><strong>Multiple Events:</strong> Allow multiple saved events per user</li>
+                <li><strong>Persistence:</strong> Events remain saved until date is completed</li>
+                <li><strong>Auto-load:</strong> Load saved events when same user logs in</li>
+                <li><strong>Local Storage:</strong> Uses localStorage with user-specific keys</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🛍️ Product Display Features</h2>
+        
+        <div class="comparison">
+            <div class="before">
+                <h4>❌ BEFORE: Generic Suggestions</h4>
+                <ul>
+                    <li>Simple search by event name</li>
+                    <li>No gender-specific logic</li>
+                    <li>Random product display</li>
+                    <li>No category intelligence</li>
+                </ul>
+            </div>
+            <div class="after">
+                <h4>✅ AFTER: Intelligent Suggestions</h4>
+                <ul>
+                    <li>Gender + Event based logic</li>
+                    <li>Curated category recommendations</li>
+                    <li>Style-appropriate filtering</li>
+                    <li>Clickable product cards</li>
+                    <li>Add to Cart / Buy Now support</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="feature-highlight">
+        <h2 style="margin-top: 0;">🎯 Key Enhancements Made</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+            <div>
+                <h4>📅 Enhanced Event Options</h4>
+                <p>25+ event types including Telugu festivals and professional events</p>
+            </div>
+            <div>
+                <h4>🧠 Intelligent Logic</h4>
+                <p>Gender + Event based category recommendations with style matching</p>
+            </div>
+            <div>
+                <h4>🔔 Smart Reminders</h4>
+                <p>Blinking chat icon, automatic reminders, and login notifications</p>
+            </div>
+            <div>
+                <h4>🛍️ Product Integration</h4>
+                <p>Clickable product cards with Add to Cart and navigation support</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Testing Scenarios</h2>
+        
+        <div class="flow-demo">
+            <h3>Test Case 1: Women + Wedding</h3>
+            <button class="demo-button" onclick="testScenario('Women', 'Wedding')">Test Women Wedding</button>
+            <p><strong>Expected:</strong> Ethnic Wear, Dresses (Traditional/Formal style)</p>
+        </div>
+
+        <div class="flow-demo">
+            <h3>Test Case 2: Men + Job Interview</h3>
+            <button class="demo-button" onclick="testScenario('Men', 'Job Interview')">Test Men Job Interview</button>
+            <p><strong>Expected:</strong> Shirts, Bottom Wear (Formal style)</p>
+        </div>
+
+        <div class="flow-demo">
+            <h3>Test Case 3: Women + Diwali Festival</h3>
+            <button class="demo-button" onclick="testScenario('Women', 'Diwali')">Test Women Diwali</button>
+            <p><strong>Expected:</strong> Ethnic Wear, Traditional Dresses</p>
+        </div>
+
+        <div class="flow-demo">
+            <h3>Test Case 4: Men + Party</h3>
+            <button class="demo-button" onclick="testScenario('Men', 'Party')">Test Men Party</button>
+            <p><strong>Expected:</strong> Stylish Shirts, T-Shirts, Bottom Wear</p>
+        </div>
+    </div>
+
+    <script>
+        function testScenario(gender, event) {
+            // Simulate the outfit suggestion logic
+            let categories = [];
+            let style = '';
+            
+            if (gender === 'Women') {
+                if (event === 'Wedding') {
+                    categories = ['Ethnic Wear', 'Dresses'];
+                    style = 'Traditional/Formal';
+                } else if (event === 'Diwali') {
+                    categories = ['Ethnic Wear', 'Traditional Dresses'];
+                    style = 'Traditional';
+                }
+            } else if (gender === 'Men') {
+                if (event === 'Job Interview') {
+                    categories = ['Shirts', 'Bottom Wear'];
+                    style = 'Formal';
+                } else if (event === 'Party') {
+                    categories = ['Stylish Shirts', 'T-Shirts', 'Bottom Wear'];
+                    style = 'Stylish';
+                }
+            }
+            
+            const result = `🎯 OUTFIT SUGGESTIONS FOR ${gender.toUpperCase()} + ${event.toUpperCase()}:\n\n` +
+                          `📂 Categories: ${categories.join(', ')}\n` +
+                          `🎨 Style: ${style}\n\n` +
+                          `This would trigger:\n` +
+                          `1. Product filtering by gender and categories\n` +
+                          `2. Display of relevant products in chat\n` +
+                          `3. Clickable product cards with navigation\n` +
+                          `4. Add to Cart / Buy Now functionality`;
+            
+            alert(result);
+        }
+
+        // Simulate calendar icon blinking
+        function simulateBlinking() {
+            const button = document.createElement('button');
+            button.innerHTML = '📅';
+            button.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px;
+                border: none;
+                border-radius: 50%;
+                background: linear-gradient(to right, #f97316, #dc2626);
+                color: white;
+                font-size: 24px;
+                animation: pulse 1s infinite;
+                cursor: pointer;
+                z-index: 1000;
+            `;
+            
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            button.onclick = () => {
+                alert('🔔 You have upcoming events!\n\nClick to open chat and see outfit suggestions.');
+                document.body.removeChild(button);
+            };
+            
+            document.body.appendChild(button);
+            
+            setTimeout(() => {
+                if (document.body.contains(button)) {
+                    document.body.removeChild(button);
+                }
+            }, 10000);
+        }
+
+        // Add demo button for blinking simulation
+        const demoSection = document.createElement('div');
+        demoSection.className = 'test-section';
+        demoSection.innerHTML = `
+            <h2>🔔 Live Demo: Blinking Chat Icon</h2>
+            <button class="demo-button" onclick="simulateBlinking()">Simulate Upcoming Event Reminder</button>
+            <p>This will show a blinking calendar icon in the top-right corner for 10 seconds.</p>
+        `;
+        document.body.appendChild(demoSection);
+
+        console.log('📅 Enhanced Calendar Event System Test Page Loaded');
+        console.log('✅ Comprehensive event options implemented');
+        console.log('✅ Intelligent outfit suggestion logic added');
+        console.log('✅ Reminder system with blinking chat icon');
+        console.log('✅ Product display with navigation support');
+    </script>
+</body>
+</html>

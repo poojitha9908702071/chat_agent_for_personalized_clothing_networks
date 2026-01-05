@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Chat Flow Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce7f3, #f3e8ff);
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .flow-test {
+            background: #f8fafc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ec4899;
+        }
+        .success { border-left-color: #10b981; background: #f0fdf4; }
+        .error { border-left-color: #ef4444; background: #fef2f2; }
+        button {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px;
+            font-weight: bold;
+        }
+        button:hover { background: #db2777; }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 New Chat Flow Test</h1>
+        <p>Testing the updated chat flow with Face Tone and Body Fit options</p>
+        
+        <div class="flow-test">
+            <h3>✅ Expected Chat Flow</h3>
+            <div class="step">
+                <strong>1. Initial Message:</strong> "Hi! I'm your fashion assistant. Choose an option to get personalized recommendations:"
+                <br><strong>Options:</strong> "1️⃣ Face Tone", "2️⃣ Body Fit"
+            </div>
+        </div>
+        
+        <div class="flow-test">
+            <h3>🎨 Face Tone Flow</h3>
+            <div class="step">
+                <strong>Step 1:</strong> Face Tone Palette → Fair, Wheatish, Dusky, Dark
+            </div>
+            <div class="step">
+                <strong>Step 2:</strong> Color Suggestions:
+                <ul>
+                    <li>Fair → Blue, Black</li>
+                    <li>Wheatish → Red, Pink</li>
+                    <li>Dusky → White, Grey</li>
+                    <li>Dark → Green, White, Blue</li>
+                </ul>
+            </div>
+            <div class="step">
+                <strong>Step 3:</strong> "Thanks for selecting [color]. Now please select your gender:"
+            </div>
+            <div class="step">
+                <strong>Step 4:</strong> Gender-based categories:
+                <ul>
+                    <li>Men → Shirts, T-shirts, Bottom Wear, Hoodies</li>
+                    <li>Women → Western Wear, Dresses, Ethnic Wear, Tops and Co-ord Sets, Women's Bottomwear</li>
+                </ul>
+            </div>
+            <div class="step">
+                <strong>Step 5:</strong> Show filtered products from database
+            </div>
+        </div>
+        
+        <div class="flow-test">
+            <h3>👕 Body Fit Flow</h3>
+            <div class="step">
+                <strong>Step 1:</strong> "Please select your gender" → Men, Women
+            </div>
+            <div class="step">
+                <strong>Step 2:</strong> Body Types:
+                <ul>
+                    <li>Women → Slim, Curvy, Plus Size, Athletic</li>
+                    <li>Men → Slim, Athletic, Muscular, Plus Size</li>
+                </ul>
+            </div>
+            <div class="step">
+                <strong>Step 3:</strong> Same outfit categories as Face Tone flow
+            </div>
+            <div class="step">
+                <strong>Step 4:</strong> Show best suited outfits based on gender + category + fit
+            </div>
+        </div>
+        
+        <div class="flow-test success">
+            <h3>🎯 Implementation Status</h3>
+            <p>✅ Chat updated to show only 2 main options</p>
+            <p>✅ Face Tone flow implemented with exact color suggestions</p>
+            <p>✅ Body Fit flow updated with new body types</p>
+            <p>✅ Product filtering connects to FashioPulse database</p>
+            <p>✅ All flows reset properly after completion</p>
+        </div>
+        
+        <div>
+            <button onclick="window.open('http://localhost:3000/home', '_blank')">🚀 Test Live Chat</button>
+            <button onclick="testBackendConnection()">🔗 Test Backend</button>
+        </div>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        async function testBackendConnection() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/products/search?query=blue shirts men&category=fashion');
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = `
+                    <div class="flow-test success">
+                        <h3>✅ Backend Connection Test</h3>
+                        <p>Successfully connected to FashioPulse database!</p>
+                        <p>Found ${data.products ? data.products.length : 0} products for "blue shirts men"</p>
+                        <p>Backend URL: http://localhost:5000</p>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="flow-test error">
+                        <h3>❌ Backend Connection Failed</h3>
+                        <p>Error: ${error.message}</p>
+                        <p>Make sure the backend is running on port 5000</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-test backend on page load
+        setTimeout(testBackendConnection, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce7f3, #f3e8ff);
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .loading { background: #dbeafe; color: #1e40af; }
+        button {
+            background: #ec4899;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px;
+            font-weight: bold;
+        }
+        button:hover { background: #db2777; }
+        pre {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Browser API Test</h1>
+        <p>Testing API calls from the browser environment (served from Next.js)</p>
+        
+        <div>
+            <button onclick="testAPI()">🧪 Test API Connection</button>
+            <button onclick="testCORS()">🔗 Test CORS</button>
+            <button onclick="testProducts()">🛍️ Test Products API</button>
+            <button onclick="clearResults()">🗑️ Clear</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        function log(message, type = 'loading') {
+            const resultsDiv = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.createElement('div');
+            logDiv.className = `status ${type}`;
+            logDiv.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            resultsDiv.insertBefore(logDiv, resultsDiv.firstChild);
+        }
+        
+        async function testAPI() {
+            log('🔄 Testing basic API connection...', 'loading');
+            
+            try {
+                console.log('Making API call to:', `${API_URL}/cache/count`);
+                
+                const response = await fetch(`${API_URL}/cache/count`);
+                console.log('Response received:', response);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                log(`✅ API Connection Success! Found ${data.cached_products} products in database`, 'success');
+                
+                // Show response details
+                const details = document.createElement('pre');
+                details.textContent = JSON.stringify(data, null, 2);
+                document.getElementById('results').appendChild(details);
+                
+            } catch (error) {
+                console.error('API call failed:', error);
+                log(`❌ API Connection Failed: ${error.message}`, 'error');
+                
+                // Show error details
+                const details = document.createElement('pre');
+                details.textContent = `Error: ${error.message}\\nStack: ${error.stack}`;
+                document.getElementById('results').appendChild(details);
+            }
+        }
+        
+        async function testCORS() {
+            log('🔄 Testing CORS configuration...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_URL}/cache/count`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': window.location.origin
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                log('✅ CORS Test Successful', 'success');
+                
+                const details = document.createElement('pre');
+                details.textContent = `CORS Headers:\\n${JSON.stringify(corsHeaders, null, 2)}`;
+                document.getElementById('results').appendChild(details);
+                
+            } catch (error) {
+                log(`❌ CORS Test Failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testProducts() {
+            log('🔄 Testing products API...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_URL}/products/search?query=clothing&category=fashion`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                const products = data.products || [];
+                
+                log(`✅ Products API Success! Found ${products.length} products`, 'success');
+                
+                if (products.length > 0) {
+                    const sample = products.slice(0, 3).map(p => ({
+                        id: p.product_id,
+                        title: p.title.substring(0, 50),
+                        price: p.price,
+                        category: p.category
+                    }));
+                    
+                    const details = document.createElement('pre');
+                    details.textContent = `Sample Products:\\n${JSON.stringify(sample, null, 2)}`;
+                    document.getElementById('results').appendChild(details);
+                }
+                
+            } catch (error) {
+                log(`❌ Products API Failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Auto-test on page load
+        setTimeout(() => {
+            log('🚀 Page loaded from Next.js server, testing API...', 'loading');
+            testAPI();
+        }, 1000);
+        
+        // Log page info
+        log(`📍 Page URL: ${window.location.href}`, 'loading');
+        log(`📍 Origin: ${window.location.origin}`, 'loading');
+        log(`📍 API URL: ${API_URL}`, 'loading');
+    </script>
+</body>
+</html>
